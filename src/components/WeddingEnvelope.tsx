@@ -24,7 +24,7 @@ export default function WeddingEnvelope() {
     return (
         <div className="container" ref={containerRef}>
             <div className="envelope-wrapper">
-                <div className="envelope">
+                <motion.div className="envelope" >
                     <motion.div
                         className="flap"
                         style={{
@@ -52,7 +52,7 @@ export default function WeddingEnvelope() {
                         </div>
                     </motion.div>
                     <motion.div className="heart" style={{ rotate: heartRotate }}></motion.div>
-                </div>
+                </motion.div>
             </div>
         </div>
     );
