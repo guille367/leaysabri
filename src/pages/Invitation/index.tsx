@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Letter from "./components/Letter";
+import Letter from "@components/Letter";
 
 export default function Invitation() {
     const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function Invitation() {
 
         const handleWheel = (event: WheelEvent) => {
             if (event.deltaY < 0) {
-                navigate("/");
+                navigate("/?from=invitation");
             }
         };
 
@@ -22,7 +22,7 @@ export default function Invitation() {
             const touchEndY = event.touches[0].clientY;
             // Detect a downward swipe (which is an upward scroll)
             if (touchEndY > touchStartY + 50) {
-                navigate("/");
+                navigate("/?from=invitation");
             }
         };
 
@@ -38,8 +38,14 @@ export default function Invitation() {
     }, [navigate]);
 
     return (
-        <div className="letter-container">
-            <Letter />
+        <div className="invitation-container">
+            <div className="envelope-wrapper">
+                <div className="envelope">
+                    <div className="letter-container">
+                        <Letter />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
