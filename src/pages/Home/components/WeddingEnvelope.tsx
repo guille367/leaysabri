@@ -1,13 +1,21 @@
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import './WeddingEnvelope.scss';
+import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import Letter from './Letter';
 
 export default function WeddingEnvelope() {
+    const navigate = useNavigate();
     const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
+    });
+
+    useMotionValueEvent(scrollYProgress, "change", (latest) => {
+        if (latest >= 0.99) {
+            navigate('/invitation');
+        }
     });
 
     // Flap animation: 0% to 40% of scroll
@@ -22,7 +30,7 @@ export default function WeddingEnvelope() {
     const heartRotate = useTransform(scrollYProgress, [0, .2], ['45deg', '90deg']);
 
     return (
-        <div className="container" ref={containerRef}>
+        <div className="container" ref={containerRef} style={{ bottom: "0" }}>
             <div className="envelope-wrapper">
                 <motion.div className="envelope" >
                     <motion.div
@@ -43,13 +51,7 @@ export default function WeddingEnvelope() {
                             zIndex: letterZIndex
                         }}
                     >
-                        <div className="text">
-                            <strong>Dear Person.</strong>
-                            <p>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                Numquam labore omnis minus maiores laboriosam, facere in beatae esse.
-                            </p>
-                        </div>
+                        <Letter />
                     </motion.div>
                     <motion.div className="heart" style={{ rotate: heartRotate }}></motion.div>
                 </motion.div>

@@ -1,0 +1,18 @@
+@use "../pages/Invitation/styles.scss" as invitation;
+@use "../pages/Home/styles.scss" as home;
+
+:root {
+    --primary: #fff;
+    --bg-color: rgb(5, 53, 61);
+    --bg-envelope-color: #f5edd1;
+    --envelope-tab: #ecdeb8;
+    --envelope-cover: #e6cfa7;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --txt-color: #444;
+    --heart-color: rgb(252, 8, 231);
+}
+
+body {
+    background: var(--bg-color);
+    margin: 0;
+}
