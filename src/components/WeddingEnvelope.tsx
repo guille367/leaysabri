@@ -1,19 +1,48 @@
 
 import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import './WeddingEnvelope.scss';
 
 export default function WeddingEnvelope() {
-    const envelope = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end end"]
+    });
 
-    const handleOpen = () => {
-        envelope.current?.classList.toggle('flap');
-    };
+    // Flap animation: 0% to 40% of scroll
+    const flapRotateX = useTransform(scrollYProgress, [0, 0.4], [0, 180]);
+    const flapZIndex = useTransform(scrollYProgress, [0, 0.39, 0.4], [2, 2, 0]);
+
+    // Letter animation: 40% to 100% of scroll
+    const letterBottom = useTransform(scrollYProgress, [0.4, .6, .8, 1], [0, 300, 150, 0]);
+    const letterScale = useTransform(scrollYProgress, [0.4, .6, .8, 1], [1, 1.25, 1.5, 2]);
+    const letterZIndex = useTransform(scrollYProgress, [0.5, 1], [0, 10]);
+
+    const heartRotate = useTransform(scrollYProgress, [0, .2], ['45deg', '90deg']);
 
     return (
-        <div className="container">
-            <div className="envelope-wrapper" ref={envelope} onClick={handleOpen}>
+        <div className="container" ref={containerRef}>
+            <div className="envelope-wrapper">
                 <div className="envelope">
-                    <div className="letter">
+                    <motion.div
+                        className="flap"
+                        style={{
+                            rotateX: flapRotateX,
+                            zIndex: flapZIndex,
+                            transformOrigin: "top"
+                        }}
+                    />
+                    <div className="pocket" />
+
+                    <motion.div
+                        className="letter"
+                        style={{
+                            bottom: letterBottom,
+                            scale: letterScale,
+                            zIndex: letterZIndex
+                        }}
+                    >
                         <div className="text">
                             <strong>Dear Person.</strong>
                             <p>
@@ -21,9 +50,9 @@ export default function WeddingEnvelope() {
                                 Numquam labore omnis minus maiores laboriosam, facere in beatae esse.
                             </p>
                         </div>
-                    </div>
+                    </motion.div>
+                    <motion.div className="heart" style={{ rotate: heartRotate }}></motion.div>
                 </div>
-                <div className="heart"></div>
             </div>
         </div>
     );
