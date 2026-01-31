@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import './styles.scss'
-import ScrollHint from '../ScrollHint'
 
 interface HeroSectionProps {
     coupleNames: string
