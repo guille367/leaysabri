@@ -1,6 +1,7 @@
 import './styles/index.scss'
 import HeroSection from './components/HeroSection'
 import IntroSection from './components/IntroSection'
+import TimelineCarousel from './components/TimelineCarousel'
 import EventsSection from './components/EventsSection'
 import MapSection from './components/MapSection'
 import CTASection from './components/CTASection'
@@ -59,6 +60,25 @@ const FOOTER = {
     whatsappNumber: '+5491112345678', // Add contact number
 }
 
+// Timeline photos - Add your photos here with their year
+const TIMELINE_PHOTOS = [
+    { src: '/leaysabri01.jpg', alt: 'Nuestra historia', year: 2013 },
+    { src: '/leaysabri02.jpg', alt: 'Nuestra historia', year: 2014 },
+    { src: '/leaysabri03.jpg', alt: 'Nuestra historia', year: 2015 },
+    { src: '/leaysabri04.jpg', alt: 'Nuestra historia', year: 2016 },
+    { src: '/leaysabri05.jpg', alt: 'Nuestra historia', year: 2017 },
+    { src: '/leaysabri06.jpg', alt: 'Nuestra historia', year: 2018 },
+    { src: '/leaysabri07.jpg', alt: 'Nuestra historia', year: 2019 },
+    { src: '/leaysabri08.jpg', alt: 'Nuestra historia', year: 2020 },
+    { src: '/leaysabri09.jpg', alt: 'Nuestra historia', year: 2021 },
+    { src: '/leaysabri10.jpg', alt: 'Nuestra historia', year: 2022 },
+    { src: '/leaysabri11.jpg', alt: 'Nuestra historia', year: 2023 },
+    { src: '/leaysabri12.jpg', alt: 'Nuestra historia', year: 2024 },
+    { src: '/leaysabri13.jpg', alt: 'Nuestra historia', year: 2025 },
+    { src: '/leaysabri14.jpg', alt: 'Nuestra historia', year: 2025 },
+    { src: '/leaysabri14.jpg', alt: 'Nuestra historia', year: 2025 },
+]
+
 // ============================================
 // PAGE COMPONENT
 // ============================================
@@ -74,6 +94,7 @@ export default function InvitationReplicated() {
             />
 
             <IntroSection />
+
 
             <EventsSection event={EVENT} />
 
@@ -91,14 +112,7 @@ export default function InvitationReplicated() {
 
             <MapSection locationQuery="Av. Suárez 1698, Buenos Aires, Argentina" />
 
-
-            {/* <EngagementSection
-                hashtag={ENGAGEMENT.hashtag}
-                hashtagDescription={ENGAGEMENT.hashtagDescription}
-                spotifyUrl={ENGAGEMENT.spotifyUrl}
-                spotifyDescription={ENGAGEMENT.spotifyDescription}
-                instagramUrl={ENGAGEMENT.instagramUrl}
-            /> */}
+            <TimelineCarousel title="Nuestra historia" photos={TIMELINE_PHOTOS} startYear={2013} endYear={2025} />
 
             <Footer
                 coupleNames={COUPLE_NAMES}
