@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './styles/index.scss'
 import HeroSection from './components/HeroSection'
 import IntroSection from './components/IntroSection'
@@ -5,6 +6,7 @@ import TimelineCarousel from './components/TimelineCarousel'
 import EventsSection from './components/EventsSection'
 import MapSection from './components/MapSection'
 import CTASection from './components/CTASection'
+import RSVPModal from './components/RSVPModal'
 import Footer from './components/Footer'
 
 // ============================================
@@ -91,6 +93,8 @@ const TIMELINE_PHOTOS = [
 // ============================================
 
 export default function Invitation() {
+    const [rsvpModalOpen, setRsvpModalOpen] = useState(false)
+
     return (
         <main className="inv-page">
             <HeroSection
@@ -102,15 +106,13 @@ export default function Invitation() {
 
             <IntroSection />
 
-
             <EventsSection event={EVENT} />
 
-            
             <CTASection
                 rsvpTitle={CTA.rsvpTitle}
                 rsvpDescription={CTA.rsvpDescription}
                 rsvpButtonText={CTA.rsvpButtonText}
-                rsvpUrl={CTA.rsvpUrl}
+                onRSVPClick={() => setRsvpModalOpen(true)}
                 giftTitle={CTA.giftTitle}
                 giftDescription={CTA.giftDescription}
                 giftButtonText={CTA.giftButtonText}
@@ -126,6 +128,11 @@ export default function Invitation() {
                 message={FOOTER.message}
                 instagramUrl={FOOTER.instagramUrl}
                 whatsappNumber={FOOTER.whatsappNumber}
+            />
+
+            <RSVPModal
+                isOpen={rsvpModalOpen}
+                onClose={() => setRsvpModalOpen(false)}
             />
         </main>
     )

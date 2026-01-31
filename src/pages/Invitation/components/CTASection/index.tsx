@@ -16,6 +16,7 @@ interface CTASectionProps {
     rsvpDescription?: string
     rsvpButtonText?: string
     rsvpUrl?: string
+    onRSVPClick?: () => void
     giftTitle?: string
     giftDescription?: string
     giftButtonText?: string
@@ -29,6 +30,7 @@ export default function CTASection({
     rsvpDescription = 'Para una mejor organización, es muy importante que nos ayudes confirmando tu asistencia:',
     rsvpButtonText = 'RSVP',
     rsvpUrl = '#',
+    onRSVPClick,
     giftTitle = '¿Querés regalarnos?',
     giftDescription = 'Haciendo click en el siguiente botón podés ver nuestros elegidos. ¡Gracias!',
     giftButtonText = 'REGALÁ',
@@ -76,9 +78,15 @@ export default function CTASection({
             >
                 <h2 className="inv-cta__title">{rsvpTitle}</h2>
                 <p className="inv-cta__description">{rsvpDescription}</p>
-                <Button href={rsvpUrl} variant="primary">
-                    {rsvpButtonText}
-                </Button>
+                {onRSVPClick ? (
+                    <Button onClick={onRSVPClick} variant="primary">
+                        {rsvpButtonText}
+                    </Button>
+                ) : (
+                    <Button href={rsvpUrl} variant="primary">
+                        {rsvpButtonText}
+                    </Button>
+                )}
             </motion.div>
 
             {/* Gift Column */}
