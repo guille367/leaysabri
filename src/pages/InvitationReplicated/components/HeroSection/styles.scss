@@ -1,0 +1,107 @@
+@use '../../styles/mixins' as *;
+
+.inv-hero {
+    position: relative;
+    min-height: 100vh;
+    @include flex-column;
+    @include flex-center;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--inv-primary);
+
+    &__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.2) 50%,
+            rgba(0, 0, 0, 0.5) 100%
+        );
+        z-index: 1;
+    }
+
+    &__content {
+        position: relative;
+        z-index: 2;
+        @include flex-column;
+        align-items: center;
+        text-align: center;
+        padding: var(--inv-space-xl);
+        max-width: 600px;
+    }
+
+    &__names {
+        font-family: var(--inv-font-secondary);
+        font-size: var(--inv-text-lg);
+        color: var(--inv-text-light);
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        margin: 0 0 var(--inv-space-lg) 0;
+        opacity: 0.9;
+
+        @include tablet {
+            font-size: var(--inv-text-base);
+            letter-spacing: 3px;
+        }
+    }
+
+    &__headline {
+        font-family: var(--inv-font-accent);
+        font-size: var(--inv-text-5xl);
+        font-weight: 400;
+        color: var(--inv-text-light);
+        margin: 0 0 var(--inv-space-lg) 0;
+        line-height: 1.1;
+
+        @include tablet {
+            font-size: var(--inv-text-4xl);
+        }
+
+        @include mobile {
+            font-size: var(--inv-text-3xl);
+        }
+    }
+
+    &__subheadline {
+        font-family: var(--inv-font-secondary);
+        font-size: var(--inv-text-xl);
+        color: var(--inv-text-light);
+        margin: 0;
+        opacity: 0.9;
+        max-width: 400px;
+        line-height: 1.6;
+
+        @include tablet {
+            font-size: var(--inv-text-lg);
+        }
+    }
+
+    &__scroll-hint {
+        position: absolute;
+        bottom: var(--inv-space-2xl);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        background: none;
+        border: none;
+        color: var(--inv-text-light);
+        cursor: pointer;
+        @include flex-column;
+        align-items: center;
+        gap: var(--inv-space-xs);
+        font-family: var(--inv-font-secondary);
+        font-size: var(--inv-text-sm);
+        opacity: 0.8;
+        transition: opacity var(--inv-transition-fast);
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &__scroll-icon {
+        width: 24px;
+        height: 24px;
+    }
+}

@@ -1,0 +1,65 @@
+@use '../../styles/mixins' as *;
+
+.inv-button {
+    @include button-base;
+
+    &--primary {
+        background: var(--inv-accent);
+        color: var(--inv-text-light);
+
+        &:hover {
+            background: var(--inv-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--inv-shadow-md);
+        }
+    }
+
+    &--secondary {
+        background: var(--inv-bg-section);
+        color: var(--inv-text-primary);
+
+        &:hover {
+            background: var(--inv-border);
+        }
+    }
+
+    &--outline {
+        background: transparent;
+        color: var(--inv-accent);
+        border: 2px solid var(--inv-accent);
+
+        &:hover {
+            background: var(--inv-accent);
+            color: var(--inv-text-light);
+        }
+    }
+
+    &--sm {
+        padding: var(--inv-space-sm) var(--inv-space-md);
+        font-size: var(--inv-text-sm);
+    }
+
+    &--md {
+        padding: var(--inv-space-md) var(--inv-space-xl);
+        font-size: var(--inv-text-base);
+    }
+
+    &--lg {
+        padding: var(--inv-space-lg) var(--inv-space-2xl);
+        font-size: var(--inv-text-lg);
+    }
+
+    &--full {
+        width: 100%;
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+}

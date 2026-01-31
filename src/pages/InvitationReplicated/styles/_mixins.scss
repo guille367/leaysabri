@@ -1,0 +1,107 @@
+// Mixins for Replicated Invitation
+
+// Responsive breakpoints
+@mixin mobile {
+    @media (max-width: 480px) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (max-width: 768px) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: 769px) {
+        @content;
+    }
+}
+
+// Flexbox utilities
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+// Typography
+@mixin heading-style {
+    font-family: var(--inv-font-accent);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--inv-text-primary);
+}
+
+@mixin body-style {
+    font-family: var(--inv-font-secondary);
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--inv-text-secondary);
+}
+
+// Section layout
+@mixin section-padding {
+    padding: var(--inv-space-3xl) var(--inv-space-lg);
+
+    @include tablet {
+        padding: var(--inv-space-2xl) var(--inv-space-md);
+    }
+}
+
+@mixin container {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+// Button base
+@mixin button-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--inv-space-sm);
+    padding: var(--inv-space-md) var(--inv-space-xl);
+    border: none;
+    border-radius: var(--inv-radius-md);
+    font-family: var(--inv-font-secondary);
+    font-size: var(--inv-text-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--inv-transition-base);
+    text-decoration: none;
+}
+
+// Card style
+@mixin card {
+    background: var(--inv-bg-card);
+    border-radius: var(--inv-radius-lg);
+    box-shadow: var(--inv-shadow-sm);
+    padding: var(--inv-space-xl);
+}
+
+// Smooth scroll reveal animation
+@mixin fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

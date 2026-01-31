@@ -1,0 +1,30 @@
+@use '../../styles/mixins' as *;
+
+.inv-section-title {
+    margin-bottom: var(--inv-space-xl);
+
+    &--centered {
+        text-align: center;
+    }
+
+    &__heading {
+        @include heading-style;
+        font-size: var(--inv-text-3xl);
+        margin: 0 0 var(--inv-space-sm) 0;
+
+        @include tablet {
+            font-size: var(--inv-text-2xl);
+        }
+    }
+
+    &__subtitle {
+        @include body-style;
+        font-size: var(--inv-text-lg);
+        margin: 0;
+        color: var(--inv-text-secondary);
+
+        @include tablet {
+            font-size: var(--inv-text-base);
+        }
+    }
+}

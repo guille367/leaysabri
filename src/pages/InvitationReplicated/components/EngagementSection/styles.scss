@@ -1,0 +1,58 @@
+@use '../../styles/mixins' as *;
+
+.inv-engagement {
+    @include section-padding;
+    background: var(--inv-bg-section);
+
+    &__container {
+        @include container;
+        @include flex-column;
+        gap: var(--inv-space-2xl);
+    }
+
+    &__item {
+        @include card;
+        @include flex-column;
+        align-items: center;
+        text-align: center;
+        gap: var(--inv-space-md);
+
+        &--spotify {
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            color: var(--inv-text-light);
+
+            .inv-engagement__description {
+                color: rgba(255, 255, 255, 0.9);
+            }
+        }
+    }
+
+    &__icon {
+        width: 40px;
+        height: 40px;
+        color: var(--inv-accent);
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        &--spotify {
+            color: var(--inv-text-light);
+        }
+    }
+
+    &__hashtag {
+        @include heading-style;
+        font-size: var(--inv-text-2xl);
+        margin: 0;
+        color: var(--inv-accent);
+    }
+
+    &__description {
+        @include body-style;
+        font-size: var(--inv-text-base);
+        margin: 0;
+        max-width: 300px;
+    }
+}

@@ -1,0 +1,22 @@
+// Main styles entry point for InvitationReplicated
+@use './variables';
+
+// Page wrapper styles
+.inv-page {
+    min-height: 100vh;
+    background: var(--inv-bg-main);
+    overflow-x: hidden;
+
+    // Smooth scrolling
+    scroll-behavior: smooth;
+
+    // Reset link styles
+    a {
+        text-decoration: none;
+    }
+
+    // Reset button styles
+    button {
+        font-family: inherit;
+    }
+}

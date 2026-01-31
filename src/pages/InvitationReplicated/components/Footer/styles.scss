@@ -1,0 +1,133 @@
+@use '../../styles/mixins' as *;
+
+.inv-footer {
+    @include section-padding;
+    background: var(--inv-primary);
+    color: var(--inv-text-light);
+    position: relative;
+
+    &__container {
+        @include container;
+        @include flex-column;
+        align-items: center;
+        gap: var(--inv-space-xl);
+    }
+
+    &__content {
+        @include flex-column;
+        align-items: center;
+        text-align: center;
+        gap: var(--inv-space-lg);
+    }
+
+    &__message {
+        font-family: var(--inv-font-secondary);
+        font-size: var(--inv-text-lg);
+        margin: 0;
+        opacity: 0.9;
+        max-width: 300px;
+        line-height: 1.6;
+
+        @include tablet {
+            font-size: var(--inv-text-base);
+        }
+    }
+
+    &__names {
+        display: flex;
+        align-items: center;
+        gap: var(--inv-space-sm);
+        font-family: var(--inv-font-accent);
+        font-size: var(--inv-text-2xl);
+
+        @include tablet {
+            font-size: var(--inv-text-xl);
+        }
+    }
+
+    &__heart {
+        width: 20px;
+        height: 20px;
+        color: var(--inv-accent);
+    }
+
+    &__social {
+        display: flex;
+        gap: var(--inv-space-md);
+    }
+
+    &__social-link {
+        width: 44px;
+        height: 44px;
+        @include flex-center;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: var(--inv-radius-full);
+        color: var(--inv-text-light);
+        transition: all var(--inv-transition-base);
+
+        svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        &:hover {
+            background: var(--inv-accent);
+            transform: translateY(-2px);
+        }
+    }
+
+    &__scroll-top {
+        position: absolute;
+        right: var(--inv-space-lg);
+        bottom: var(--inv-space-2xl);
+        width: 48px;
+        height: 48px;
+        @include flex-center;
+        background: var(--inv-accent);
+        border: none;
+        border-radius: var(--inv-radius-full);
+        color: var(--inv-text-light);
+        cursor: pointer;
+        transition: all var(--inv-transition-base);
+
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        &:hover {
+            background: var(--inv-accent-hover);
+            transform: translateY(-4px);
+            box-shadow: var(--inv-shadow-md);
+        }
+
+        @include tablet {
+            right: var(--inv-space-md);
+            bottom: var(--inv-space-lg);
+        }
+    }
+
+    &__credits {
+        padding-top: var(--inv-space-lg);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        text-align: center;
+
+        p {
+            font-family: var(--inv-font-secondary);
+            font-size: var(--inv-text-sm);
+            margin: 0;
+            opacity: 0.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--inv-space-xs);
+        }
+    }
+
+    &__credit-heart {
+        width: 14px;
+        height: 14px;
+        color: var(--inv-accent);
+    }
+}
