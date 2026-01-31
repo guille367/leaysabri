@@ -80,7 +80,6 @@
     &__scroll-hint {
         position: absolute;
         bottom: var(--inv-space-2xl);
-        left: 50%;
         transform: translateX(-50%);
         z-index: 2;
         background: none;

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import './styles.scss'
-import { ChevronDownIcon } from '../Icons'
+import ScrollHint from '../ScrollHint'
 
 interface HeroSectionProps {
     coupleNames: string
@@ -17,13 +17,6 @@ export default function HeroSection({
     backgroundImage,
     className = ''
 }: HeroSectionProps) {
-    const scrollToContent = () => {
-        window.scrollTo({
-            top: window.innerHeight,
-            behavior: 'smooth'
-        })
-    }
-
     return (
         <section
             className={`inv-hero ${className}`}
@@ -65,19 +58,7 @@ export default function HeroSection({
                 </motion.p>
             </motion.div>
 
-            <motion.button
-                className="inv-hero__scroll-hint"
-                onClick={scrollToContent}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, y: [0, 10, 0] }}
-                transition={{
-                    opacity: { delay: 1.2, duration: 0.6 },
-                    y: { delay: 1.5, duration: 1.5, repeat: Infinity }
-                }}
-            >
-                <span>Deslizá</span>
-                <ChevronDownIcon className="inv-hero__scroll-icon" />
-            </motion.button>
+            <ScrollHint variant="light" className="inv-hero__scroll-hint" />
         </section>
     )
 }

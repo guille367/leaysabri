@@ -1,18 +1,21 @@
 @use "../pages/Invitation/styles.scss" as invitation;
 @use "../pages/Home/styles.scss" as home;
+@use "../pages/InvitationReplicated/styles/variables";
 
 :root {
-    --primary: #fff;
-    --bg-color: rgb(5, 53, 61);
+    // Legacy variables mapped to new design system
+    --primary: var(--inv-bg-main);
+    --bg-color: var(--inv-bg-section);
     --bg-envelope-color: #f5edd1;
-    --envelope-tab: #ecdeb8;
-    --envelope-cover: #e6cfa7;
-    --shadow-color: rgba(0, 0, 0, 0.2);
-    --txt-color: #444;
-    --heart-color: rgb(252, 8, 231);
+    --envelope-tab: var(--inv-accent);
+    --envelope-cover: var(--inv-accent-hover);
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --txt-color: var(--inv-text-primary);
+    --heart-color: var(--inv-accent);
 }
 
 body {
-    background: var(--bg-color);
+    background: var(--inv-bg-main);
     margin: 0;
+    font-family: var(--inv-font-secondary);
 }

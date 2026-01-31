@@ -18,7 +18,7 @@ const HERO_CONTENT: {
 } = {
     headline: '¡Nos Casamos!',
     subheadline: 'Y queremos compartir este día tan especial con vos',
-    // backgroundImage: '/path/to/your/photo.jpg', // Add your photo here
+    backgroundImage: 'retrait.png', // Add your photo here
 }
 
 const EVENTS = [

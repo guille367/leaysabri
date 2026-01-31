@@ -1,6 +1,5 @@
-// @use '../../../components/Letter/styles.scss';
-
 @use '../../components/Letter/styles.scss' as letter-styles;
+@use '../InvitationReplicated/styles/variables';
 
 .container {
     height: 300vh;
@@ -8,83 +7,104 @@
     justify-content: center;
     align-items: flex-start;
     position: relative;
+    background: var(--inv-bg-main);
 
     >.envelope-wrapper {
         position: sticky;
         top: 50vh;
         transform: translateY(-50%);
-        background: var(--bg-envelope-color);
 
         >.envelope {
             position: relative;
             width: 300px;
             height: 230px;
-            // perspective: 1000px;
+            background: var(--inv-bg-card);
+            border-radius: var(--inv-radius-lg);
+            box-shadow: var(--inv-shadow-md);
 
             .flap {
                 position: absolute;
                 top: 0;
                 z-index: 2;
-                border-top: 130px solid var(--envelope-tab);
+                border-top: 130px solid var(--inv-accent);
                 border-right: 150px solid transparent;
                 border-left: 150px solid transparent;
                 transform-origin: top;
-                // Animation handled by Framer Motion
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+                backface-visibility: visible;
             }
 
-            // Replaced ::after with .pocket
             .pocket {
                 position: absolute;
                 z-index: 2;
                 width: 0px;
                 height: 0px;
                 border-top: 130px solid transparent;
-                border-right: 150px solid var(--envelope-cover);
-                border-bottom: 100px solid var(--envelope-cover);
-                border-left: 150px solid var(--envelope-cover);
+                border-right: 150px solid var(--inv-accent-hover);
+                border-bottom: 100px solid var(--inv-accent-hover);
+                border-left: 150px solid var(--inv-accent-hover);
+                border-bottom-left-radius: var(--inv-radius-lg);
+                border-bottom-right-radius: var(--inv-radius-lg);
             }
 
-            >.letter-container {
+            .heart {
                 position: absolute;
-                right: 22%;
-                bottom: 0;
-                width: 60%;
-                height: 100%;
-                background: var(--primary);
-                box-shadow: 0 0 5px var(--shadow-color);
+                top: 50%;
+                left: 48%;
+                width: 18px;
+                height: 18px;
+                background: var(--inv-primary);
+                z-index: 4;
+                transform: translate(-50%, -20%) rotate(45deg);
+                box-shadow: var(--inv-shadow-sm);
+                cursor: pointer;
+                transition: transform 0.3s ease;
+
+                &:hover {
+                    transform: translate(-50%, -20%) rotate(45deg) scale(1.1);
+                }
+
+                &:before,
+                &:after {
+                    content: "";
+                    position: absolute;
+                    width: 18px;
+                    height: 18px;
+                    background-color: var(--inv-primary);
+                    border-radius: 50%;
+                }
+
+                &:before {
+                    top: -9px;
+                }
+
+                &:after {
+                    right: 9px;
+                }
             }
         }
 
-        .heart {
+        // Letter rises from envelope and centers on screen
+        >.letter-container {
             position: absolute;
-            top: 50%;
-            left: 48%;
-            width: 15px;
-            height: 15px;
-            background: var(--heart-color);
-            z-index: 4;
-            transform: translate(-50%, -20%) rotate(45deg);
-            // transition: transform 0.5s ease-in-out 1s;
-            box-shadow: 0 1px 6px var(--shadow-color);
-            cursor: pointer;
+            left: 20%;
+            bottom: 20px;
+            transform: translateX(-50%);
+            width: 170px;
+            height: 200px;
+            background: var(--inv-bg-main);
+            box-shadow: var(--inv-shadow-lg);
+            transform-origin: center center;
+            border-radius: var(--inv-radius-md);
+            overflow: hidden;
+        }
 
-            &:before,
-            &:after {
-                content: "";
-                position: absolute;
-                width: 15px;
-                height: 15px;
-                background-color: var(--heart-color);
-                border-radius: 50%;
-            }
-
-            &:before {
-                top: -7.5px;
-            }
-
-            &:after {
-                right: 7.5px;
-            }
+        // Scroll hint below envelope
+        >.envelope-scroll-hint {
+            position: absolute;
+            bottom: -264px;
+            left: 50%;
+            transform: translateX(-50%);
         }
     }
 }

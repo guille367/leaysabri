@@ -1,0 +1,33 @@
+@use '../../styles/mixins' as *;
+
+.scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--inv-space-xs);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--inv-font-secondary);
+    font-size: var(--inv-text-sm);
+    opacity: 0.8;
+    transition: opacity var(--inv-transition-fast);
+    padding: var(--inv-space-sm);
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &--light {
+        color: var(--inv-text-light);
+    }
+
+    &--dark {
+        color: var(--inv-text-primary);
+    }
+
+    &__icon {
+        width: 24px;
+        height: 24px;
+    }
+}
