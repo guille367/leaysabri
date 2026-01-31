@@ -1,8 +1,8 @@
 import './styles/index.scss'
 import HeroSection from './components/HeroSection'
+import IntroSection from './components/IntroSection'
 import EventsSection from './components/EventsSection'
 import CTASection from './components/CTASection'
-import EngagementSection from './components/EngagementSection'
 import Footer from './components/Footer'
 
 // ============================================
@@ -21,49 +21,36 @@ const HERO_CONTENT: {
     backgroundImage: 'retrait.png', // Add your photo here
 }
 
-const EVENTS = [
+const EVENT = 
     {
         type: 'ceremony' as const,
-        title: 'Ceremonia',
-        date: 'Sábado 15 de Marzo, 2025',
-        time: '17:00 hs',
-        location: 'Iglesia San Pedro',
-        locationUrl: 'https://maps.google.com/?q=Iglesia+San+Pedro',
-    },
-    {
-        type: 'party' as const,
-        title: 'Fiesta',
-        date: 'Sábado 15 de Marzo, 2025',
-        time: '20:00 hs',
-        location: 'Salón de Eventos',
-        locationUrl: 'https://maps.google.com/?q=Salon+de+Eventos',
-    },
-]
+        title: 'CEREMONIA & FIESTA',
+        date: 'sábado 13 de septiembre 2025',
+        time: '16:00 hs.',
+        venue: 'Schoenstatt Los Olmos',
+        address: 'Schoenstatt Los Olmos Pilar, Buenos Aires Province, Argentina',
+        locationUrl: 'https://maps.google.com/?q=Schoenstatt+Los+Olmos+Pilar',
+    }
 
-const CTA_ITEMS = [
-    {
-        icon: 'heart' as const,
-        title: 'Confirmá tu asistencia',
-        description: 'Por favor confirmanos tu presencia antes del 1 de Marzo',
-        buttonText: 'Confirmar',
-        buttonUrl: '#', // Add your RSVP form URL
-    },
-    {
-        icon: 'gift' as const,
-        title: 'Mesa de regalos',
-        description: 'Si querés hacernos un regalo, te dejamos algunas ideas',
-        buttonText: 'Ver regalos',
-        buttonUrl: '#', // Add your gift registry URL
-    },
-]
 
-const ENGAGEMENT = {
-    hashtag: '#LeaYSabri2025',
-    hashtagDescription: 'Compartí tus fotos y videos usando nuestro hashtag',
-    spotifyUrl: 'https://open.spotify.com/playlist/xxxxx', // Add your playlist URL
-    spotifyDescription: 'Sugerí canciones para nuestra playlist',
-    instagramUrl: 'https://instagram.com/leaysabri',
+const CTA = {
+    rsvpTitle: '¿Venís?',
+    rsvpDescription: 'Nos encantaría que vengan y agradecemos mucho que nos confirmen su asistencia:',
+    rsvpButtonText: 'RSVP',
+    rsvpUrl: '#',
+    giftTitle: '¿Querés hacernos un regalo?',
+    giftDescription: 'Su presencia es nuestro mejor regalo, pero si desean regalarnos algo, agradeceríamos tu contribución para nuestra luna de miel',
+    giftButtonText: 'Ver datos bancarios',
+    giftUrl: '#',
 }
+
+// const ENGAGEMENT = {
+//     hashtag: '#LeaYSabri2025',
+//     hashtagDescription: 'Compartí tus fotos y videos usando nuestro hashtag',
+//     spotifyUrl: 'https://open.spotify.com/playlist/xxxxx', // Add your playlist URL
+//     spotifyDescription: 'Sugerí canciones para nuestra playlist',
+//     instagramUrl: 'https://instagram.com/leaysabri',
+// }
 
 const FOOTER = {
     message: 'Gracias por ser parte de este día tan especial',
@@ -85,17 +72,28 @@ export default function InvitationReplicated() {
                 backgroundImage={HERO_CONTENT.backgroundImage}
             />
 
-            <EventsSection events={EVENTS} />
+            <IntroSection />
 
-            <CTASection items={CTA_ITEMS} />
+            <EventsSection event={EVENT} />
 
-            <EngagementSection
+            <CTASection
+                rsvpTitle={CTA.rsvpTitle}
+                rsvpDescription={CTA.rsvpDescription}
+                rsvpButtonText={CTA.rsvpButtonText}
+                rsvpUrl={CTA.rsvpUrl}
+                giftTitle={CTA.giftTitle}
+                giftDescription={CTA.giftDescription}
+                giftButtonText={CTA.giftButtonText}
+                giftUrl={CTA.giftUrl}
+            />
+
+            {/* <EngagementSection
                 hashtag={ENGAGEMENT.hashtag}
                 hashtagDescription={ENGAGEMENT.hashtagDescription}
                 spotifyUrl={ENGAGEMENT.spotifyUrl}
                 spotifyDescription={ENGAGEMENT.spotifyDescription}
                 instagramUrl={ENGAGEMENT.instagramUrl}
-            />
+            /> */}
 
             <Footer
                 coupleNames={COUPLE_NAMES}

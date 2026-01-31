@@ -12,14 +12,39 @@ export function ChurchIcon({ className = '' }: { className?: string }) {
 
 export function PartyIcon({ className = '' }: { className?: string }) {
     return (
-        <svg className={className} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 60l8-40 8 40" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M36 60l8-40 8 40" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <circle cx="16" cy="12" r="4" stroke="currentColor" strokeWidth="2"/>
-            <circle cx="32" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
-            <circle cx="48" cy="14" r="4" stroke="currentColor" strokeWidth="2"/>
-            <path d="M8 20l8-4M56 18l-8-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
+<svg className={className} id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  {/* <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #41484f;
+        stroke-miterlimit: 10;
+        stroke-width: 1.15px;
+      }
+
+      .cls-2 {
+        fill: #f3f1eb;
+      }
+    </style>
+  </defs> */}
+  <g>
+    <path className="cls-1" d="M35.12,25.7s-6.21,15.58-1.47,23.79c1.61,2.78,5.27,3.75,8.05,2.13,8.18-4.78,10.5-21.4,10.5-21.4"/>
+    <path className="cls-1" d="M52.2,30.23s.02-1.86-7.2-4.16c-7.22-2.3-9.87-.37-9.87-.37,0,0,.09,3.14,8.12,4.94,8.03,1.8,8.96-.42,8.96-.42Z"/>
+    <path className="cls-2" d="M34.55,37s-1.63,11.27,3.05,12.47c4.68,1.2,8.18-5.45,10.82-13.37,0,0-3.54-1.68-7.37,1.12-3.32,2.42-6.5-.21-6.5-.21Z"/>
+    <line className="cls-1" x1="37.44" y1="52.42" x2="30.23" y2="81.56"/>
+    <line className="cls-1" x1="26.42" y1="80.4" x2="34" y2="82.26"/>
+  </g>
+  <g>
+    <path className="cls-1" d="M51.73,39.49s.49,16.77,8.1,22.41c2.58,1.92,6.33,1.35,8.23-1.24,5.61-7.64,1.13-23.81,1.13-23.81"/>
+    <path className="cls-1" d="M69.2,36.85s-.72-1.71-8.26-.95c-7.54.76-9.2,3.59-9.2,3.59,0,0,1.33,2.85,9.41,1.31,8.08-1.54,8.05-3.94,8.05-3.94Z"/>
+    <path className="cls-2" d="M55.7,50.09s2.99,10.99,7.76,10.23c4.77-.76,5.34-8.26,4.61-16.57,0,0-3.91-.14-6.32,3.95-2.08,3.54-6.05,2.39-6.05,2.39Z"/>
+    <line className="cls-1" x1="64.48" y1="63.08" x2="69.85" y2="92.61"/>
+    <line className="cls-1" x1="65.89" y1="93.06" x2="73.58" y2="91.75"/>
+  </g>
+  <line className="cls-1" x1="72.72" y1="22.9" x2="62.83" y2="29.66"/>
+  <line className="cls-1" x1="65.81" y1="11.47" x2="58.83" y2="26.66"/>
+  <line className="cls-1" x1="52.62" y1="14.86" x2="54.37" y2="24.72"/>
+</svg>
     )
 }
 

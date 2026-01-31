@@ -1,61 +1,61 @@
 import { motion } from 'framer-motion'
 import './styles.scss'
 import Button from '../Button'
-import { GiftIcon, HeartIcon } from '../Icons'
-
-interface CTAItem {
-    title: string
-    description: string
-    buttonText: string
-    buttonUrl?: string
-    icon?: 'gift' | 'heart'
-}
 
 interface CTASectionProps {
-    items: CTAItem[]
+    rsvpTitle?: string
+    rsvpDescription?: string
+    rsvpButtonText?: string
+    rsvpUrl?: string
+    giftTitle?: string
+    giftDescription?: string
+    giftButtonText?: string
+    giftUrl?: string
     className?: string
 }
 
 export default function CTASection({
-    items,
+    rsvpTitle = '¿Venís?',
+    rsvpDescription = 'Para una mejor organización, es muy importante que nos ayudes confirmando tu asistencia:',
+    rsvpButtonText = 'RSVP',
+    rsvpUrl = '#',
+    giftTitle = '¿Querés regalarnos?',
+    giftDescription = 'Haciendo click en el siguiente botón podés ver nuestros elegidos. ¡Gracias!',
+    giftButtonText = 'REGALÁ',
+    giftUrl = '#',
     className = ''
 }: CTASectionProps) {
-    const getIcon = (icon?: 'gift' | 'heart') => {
-        switch (icon) {
-            case 'gift':
-                return <GiftIcon />
-            case 'heart':
-                return <HeartIcon />
-            default:
-                return null
-        }
-    }
-
     return (
         <section className={`inv-cta ${className}`}>
-            <div className="inv-cta__container">
-                {items.map((item, index) => (
-                    <motion.div
-                        key={item.title}
-                        className="inv-cta__item"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: '-50px' }}
-                        transition={{ delay: index * 0.15, duration: 0.5 }}
-                    >
-                        {item.icon && (
-                            <div className="inv-cta__icon">
-                                {getIcon(item.icon)}
-                            </div>
-                        )}
-                        <h3 className="inv-cta__title">{item.title}</h3>
-                        <p className="inv-cta__description">{item.description}</p>
-                        <Button href={item.buttonUrl} variant="primary">
-                            {item.buttonText}
-                        </Button>
-                    </motion.div>
-                ))}
-            </div>
+            {/* RSVP Column */}
+            <motion.div
+                className="inv-cta__column"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.6 }}
+            >
+                <h2 className="inv-cta__title">{rsvpTitle}</h2>
+                <p className="inv-cta__description">{rsvpDescription}</p>
+                <Button href={rsvpUrl} variant="primary">
+                    {rsvpButtonText}
+                </Button>
+            </motion.div>
+
+            {/* Gift Column */}
+            <motion.div
+                className="inv-cta__column"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ delay: 0.15, duration: 0.6 }}
+            >
+                <h2 className="inv-cta__title">{giftTitle}</h2>
+                <p className="inv-cta__description">{giftDescription}</p>
+                <Button href={giftUrl} variant="primary">
+                    {giftButtonText}
+                </Button>
+            </motion.div>
         </section>
     )
 }

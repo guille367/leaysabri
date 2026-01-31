@@ -84,9 +84,6 @@ export default function Footer({
                     </button>
                 )}
 
-                <div className="inv-footer__credits">
-                    <p>Hecho con <HeartIcon className="inv-footer__credit-heart" /></p>
-                </div>
             </div>
         </footer>
     )

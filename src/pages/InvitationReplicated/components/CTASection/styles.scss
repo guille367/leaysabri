@@ -1,47 +1,62 @@
 @use '../../styles/mixins' as *;
 
 .inv-cta {
-    @include section-padding;
-    background: var(--inv-bg-main);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--inv-bg-section);
 
-    &__container {
-        @include container;
-        @include flex-column;
-        gap: var(--inv-space-2xl);
+    @include tablet {
+        grid-template-columns: 1fr;
     }
 
-    &__item {
-        @include flex-column;
-        align-items: center;
-        text-align: center;
-        gap: var(--inv-space-md);
-    }
+    &__column {
+        padding: var(--inv-space-4xl) var(--inv-space-3xl);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
-    &__icon {
-        width: 48px;
-        height: 48px;
-        color: var(--inv-accent);
-
-        svg {
-            width: 100%;
-            height: 100%;
+        @include tablet {
+            padding: var(--inv-space-3xl) var(--inv-space-xl);
         }
     }
 
     &__title {
-        @include heading-style;
-        font-size: var(--inv-text-2xl);
-        margin: 0;
+        font-family: var(--inv-font-accent);
+        font-size: 3.5rem;
+        font-weight: 300;
+        color: var(--inv-text-primary);
+        margin: 0 0 var(--inv-space-xl) 0;
+        line-height: 1.1;
 
         @include tablet {
-            font-size: var(--inv-text-xl);
+            font-size: 2.5rem;
+        }
+
+        @include mobile {
+            font-size: 2rem;
         }
     }
 
     &__description {
-        @include body-style;
+        font-family: var(--inv-font-secondary);
         font-size: var(--inv-text-base);
-        margin: 0;
-        max-width: 400px;
+        color: var(--inv-text-secondary);
+        line-height: 1.8;
+        margin: 0 0 var(--inv-space-xl) 0;
+        max-width: 450px;
+    }
+
+    // Dark button style override
+    .inv-button--primary {
+        background: var(--inv-primary);
+        color: var(--inv-text-light);
+        padding: var(--inv-space-md) var(--inv-space-3xl);
+        font-size: var(--inv-text-sm);
+        letter-spacing: 1px;
+        max-width: 280px;
+
+        &:hover {
+            background: var(--inv-primary-light);
+        }
     }
 }

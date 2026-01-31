@@ -1,0 +1,45 @@
+@use '../../styles/mixins' as *;
+
+.inv-intro {
+    background: var(--inv-primary);
+    padding: var(--inv-space-4xl) var(--inv-space-xl);
+    text-align: center;
+
+    @include tablet {
+        padding: var(--inv-space-3xl) var(--inv-space-lg);
+    }
+
+    @include mobile {
+        padding: var(--inv-space-2xl) var(--inv-space-md);
+    }
+
+    &__content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    &__title {
+        font-family: var(--inv-font-accent);
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 400;
+        font-style: italic;
+        color: #ffffff;
+        margin: 0 0 var(--inv-space-lg) 0;
+        letter-spacing: 0.02em;
+    }
+
+    &__subtitle {
+        font-family: var(--inv-font-secondary);
+        font-size: var(--inv-text-base);
+        color: rgba(255, 255, 255, 0.85);
+        line-height: 1.7;
+        margin: 0;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+
+        @include mobile {
+            font-size: var(--inv-text-sm);
+        }
+    }
+}

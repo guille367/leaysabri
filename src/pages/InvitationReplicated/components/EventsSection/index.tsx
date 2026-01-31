@@ -1,61 +1,65 @@
 import { motion } from 'framer-motion'
 import './styles.scss'
-import EventCard from '../EventCard'
-import SectionTitle from '../SectionTitle'
 import { ChurchIcon, PartyIcon } from '../Icons'
 
 interface Event {
-    type: 'ceremony' | 'party'
     title: string
     date: string
     time: string
-    location: string
+    venue: string
+    address: string
     locationUrl?: string
 }
 
 interface EventsSectionProps {
-    title?: string
-    subtitle?: string
-    events: Event[]
+    event: Event
     className?: string
 }
 
 export default function EventsSection({
-    title = 'Ceremonia & Fiesta',
-    subtitle,
-    events,
+    event,
     className = ''
 }: EventsSectionProps) {
-    const getIcon = (type: 'ceremony' | 'party') => {
-        return type === 'ceremony' ? <ChurchIcon /> : <PartyIcon />
-    }
-
     return (
         <section className={`inv-events ${className}`}>
-            <div className="inv-events__container">
-                <SectionTitle title={title} subtitle={subtitle} />
-
-                <div className="inv-events__grid">
-                    {events.map((event, index) => (
-                        <motion.div
-                            key={event.title}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: '-50px' }}
-                            transition={{ delay: index * 0.2, duration: 0.5 }}
-                        >
-                            <EventCard
-                                icon={getIcon(event.type)}
-                                title={event.title}
-                                date={event.date}
-                                time={event.time}
-                                location={event.location}
-                                locationUrl={event.locationUrl}
-                            />
-                        </motion.div>
-                    ))}
+            <motion.div
+                className="inv-events__card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.6 }}
+            >
+                <div className="inv-events__event">
+                    <div className="inv-events__icons">
+                        <div className="inv-events__event-icon">
+                            <ChurchIcon />
+                        </div>
+                        <div className="inv-events__event-icon">
+                            <PartyIcon />
+                        </div>
+                    </div>
+                    <div className="inv-events__event-content">
+                        <h3 className="inv-events__event-title">{event.title}</h3>
+                        <p className="inv-events__event-datetime">
+                            {event.date}<br />
+                            {event.time}
+                        </p>
+                        <p className="inv-events__event-venue">{event.venue}</p>
+                        {event.locationUrl ? (
+                            <a
+                                href={event.locationUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inv-events__event-address"
+                            >
+                                {event.address}
+                            </a>
+                        ) : (
+                            <p className="inv-events__event-address">{event.address}</p>
+                        )}
+                    </div>
                 </div>
-            </div>
+            </motion.div>
         </section>
     )
 }
