@@ -38,12 +38,19 @@ const EVENT =
 const CTA = {
     rsvpTitle: '¿Venís?',
     rsvpDescription: 'Nos encantaría que vengan y agradecemos mucho que nos confirmen su asistencia:',
-    rsvpButtonText: 'RSVP',
+    rsvpButtonText: 'Confirmar',
     rsvpUrl: '#',
     giftTitle: '¿Querés hacernos un regalo?',
     giftDescription: 'Su presencia es nuestro mejor regalo, pero si desean regalarnos algo, agradeceríamos tu contribución para nuestra luna de miel',
     giftButtonText: 'Ver datos bancarios',
-    giftUrl: '#',
+}
+
+const BANKING_DATA = {
+    bankName: 'Banco Galicia',
+    accountHolder: 'Lea y Sabri',
+    accountType: 'Caja de ahorro en pesos',
+    cbu: '0070000000000000000000',
+    alias: 'LEA.SABRI.BODA',
 }
 
 // const ENGAGEMENT = {
@@ -107,7 +114,7 @@ export default function Invitation() {
                 giftTitle={CTA.giftTitle}
                 giftDescription={CTA.giftDescription}
                 giftButtonText={CTA.giftButtonText}
-                giftUrl={CTA.giftUrl}
+                bankingData={BANKING_DATA}
             />
 
             <MapSection locationQuery="Av. Suárez 1698, Buenos Aires, Argentina" />
