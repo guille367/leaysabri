@@ -2,6 +2,7 @@ import './styles/index.scss'
 import HeroSection from './components/HeroSection'
 import IntroSection from './components/IntroSection'
 import EventsSection from './components/EventsSection'
+import MapSection from './components/MapSection'
 import CTASection from './components/CTASection'
 import Footer from './components/Footer'
 
@@ -76,6 +77,7 @@ export default function InvitationReplicated() {
 
             <EventsSection event={EVENT} />
 
+            
             <CTASection
                 rsvpTitle={CTA.rsvpTitle}
                 rsvpDescription={CTA.rsvpDescription}
@@ -86,6 +88,9 @@ export default function InvitationReplicated() {
                 giftButtonText={CTA.giftButtonText}
                 giftUrl={CTA.giftUrl}
             />
+
+            <MapSection locationQuery="Av. Suárez 1698, Buenos Aires, Argentina" />
+
 
             {/* <EngagementSection
                 hashtag={ENGAGEMENT.hashtag}
