@@ -1,6 +1,6 @@
-@use "../pages/Invitation/styles.scss" as invitation;
+@use "../pages/Invitation/styles/index.scss" as invitation;
 @use "../pages/Home/styles.scss" as home;
-@use "../pages/InvitationReplicated/styles/variables";
+@use "../pages/Invitation/styles/variables";
 
 :root {
     // Legacy variables mapped to new design system

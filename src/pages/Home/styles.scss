@@ -1,7 +1,7 @@
 @use '../../components/Letter/styles.scss' as letter-styles;
-@use '../InvitationReplicated/styles/variables';
+@use '../Invitation/styles/variables';
 
-@use '../InvitationReplicated/components/icons/styles.scss' as icons-styles;
+@use '../Invitation/components/icons/styles.scss' as icons-styles;
 
 .container {
     height: 300vh;

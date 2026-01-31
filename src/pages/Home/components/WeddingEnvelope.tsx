@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Letter from '@components/Letter';
-import InvitationReplicated from '../../InvitationReplicated';
-import ScrollHint from '../../InvitationReplicated/components/ScrollHint';
+import Invitation from '../../Invitation';
+import ScrollHint from '../../Invitation/components/ScrollHint';
 
 export default function WeddingEnvelope() {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -76,7 +76,7 @@ export default function WeddingEnvelope() {
             </div>
 
             {/* Full Invitation Content */}
-            <InvitationReplicated />
+            <Invitation />
         </>
     );
 }
