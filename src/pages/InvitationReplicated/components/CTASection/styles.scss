@@ -13,7 +13,6 @@
         padding: var(--inv-space-4xl) var(--inv-space-3xl);
         display: flex;
         flex-direction: column;
-        justify-content: center;
 
         @include tablet {
             padding: var(--inv-space-3xl) var(--inv-space-xl);
@@ -54,6 +53,7 @@
         font-size: var(--inv-text-sm);
         letter-spacing: 1px;
         max-width: 280px;
+        margin-top: auto;
 
         &:hover {
             background: var(--inv-primary-light);

@@ -58,7 +58,6 @@ export default function HeroSection({
                 </motion.p>
             </motion.div>
 
-            <ScrollHint variant="light" className="inv-hero__scroll-hint" />
         </section>
     )
 }
