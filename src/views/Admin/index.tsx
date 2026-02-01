@@ -27,6 +27,7 @@ function generateCode(): string {
 }
 
 export default function Admin() {
+    const [mounted, setMounted] = useState(false)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState(false)
@@ -39,8 +40,14 @@ export default function Admin() {
     const [newGuest, setNewGuest] = useState({
         name: '',
         guests: 1,
-        code: generateCode(),
+        code: '',
     })
+
+    // Mark as mounted on client side to avoid hydration issues
+    useEffect(() => {
+        setMounted(true)
+        setNewGuest(prev => ({ ...prev, code: generateCode() }))
+    }, [])
     const [saving, setSaving] = useState(false)
 
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''

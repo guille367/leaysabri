@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'standalone', // For AWS Lambda/Docker deployment
+    trailingSlash: false,
     sassOptions: {
         silenceDeprecations: ['legacy-js-api'],
     },

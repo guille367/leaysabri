@@ -5,39 +5,51 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev      # Start Vite dev server with HMR
-npm run build    # TypeScript check + Vite production build
+npm run dev      # Start Next.js dev server
+npm run build    # Production build
+npm run start    # Start production server
 npm run lint     # Run ESLint
-npm run preview  # Preview production build locally
 ```
 
 ## Architecture
 
-This is a wedding invitation website built with React 19, TypeScript, and Vite.
+Wedding invitation website built with Next.js 14 (App Router), TypeScript, and SCSS.
 
-### Routing
+### Routes
 
-Two routes defined in [App.tsx](src/App.tsx):
-- `/` - Home page with animated envelope
-- `/invitation` - Letter/invitation content
-
-Navigation between pages is scroll/gesture-based: scrolling down on Home transitions to Invitation, scrolling up on Invitation returns to Home.
+Defined in `src/app/`:
+- `/` - Home page with animated envelope that reveals letter on scroll
+- `/invitation` - Full invitation with event details, timeline, RSVP
+- `/admin` - Guest management panel (password: `LEASABRIW`)
+- `/api/guests` - REST API for guest CRUD operations
 
 ### Project Structure
 
-- `src/components/` - Shared components (Letter)
-- `src/pages/[PageName]/` - Page components with co-located styles
-- `src/pages/[PageName]/components/` - Page-specific components
-- `src/styles/` - Global SCSS with CSS variables for theming
+- `src/app/` - Next.js App Router pages and API routes
+- `src/views/` - Page view components (Home, Invitation, Admin)
+- `src/views/[View]/components/` - View-specific components
+- `src/components/` - Shared components
+- `src/lib/` - Utilities (Google Sheets integration)
+- `src/styles/` - Global SCSS with CSS custom properties
+- `amplify/` - AWS Amplify backend configuration
 
-### Path Aliases
+### Path Alias
 
-Configured in both [vite.config.ts](vite.config.ts) and [tsconfig.app.json](tsconfig.app.json):
-- `@root/*` → project root
-- `@components/*` → `src/components/*`
+Configured in `tsconfig.json`:
+- `@/*` → `./src/*`
+
+### Backend
+
+Guest data stored in Google Sheets via `src/lib/sheets.ts`. Requires environment variables:
+- `GOOGLE_SERVICE_ACCOUNT` - Service account JSON credentials
+- `GOOGLE_SPREADSHEET_ID` - Target spreadsheet ID
 
 ### Key Dependencies
 
-- **framer-motion** - Scroll-linked animations (envelope flap, letter emergence)
-- **react-router-dom** - Client-side routing
-- **SCSS** - Styling with CSS custom properties
+- **framer-motion** - Scroll-linked animations (envelope, transitions)
+- **googleapis** - Google Sheets API for guest management
+- **sass** - SCSS styling with CSS custom properties
+
+### Design System
+
+CSS variables defined in `src/views/Invitation/styles/_variables.scss` with `--inv-` prefix for colors, typography, and spacing.
