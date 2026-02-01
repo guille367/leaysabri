@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import './styles.scss'
 
+const ADMIN_PASSWORD = 'LEASABRIW'
+
 interface Guest {
     id: string
     name: string
@@ -25,6 +27,10 @@ function generateCode(): string {
 }
 
 export default function Admin() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [password, setPassword] = useState('')
+    const [loginError, setLoginError] = useState(false)
+
     const [guests, setGuests] = useState<Guest[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -39,14 +45,26 @@ export default function Admin() {
 
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
 
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault()
+        if (password === ADMIN_PASSWORD) {
+            setIsAuthenticated(true)
+            setLoginError(false)
+        } else {
+            setLoginError(true)
+        }
+    }
+
     useEffect(() => {
-        fetchGuests()
-    }, [])
+        if (isAuthenticated) {
+            fetchGuests()
+        }
+    }, [isAuthenticated])
 
     const fetchGuests = async () => {
         try {
             setLoading(true)
-            const response = await fetch('/.netlify/functions/guests')
+            const response = await fetch('/api/guests')
             const data = await response.json()
             setGuests(data.guests || [])
             setError(null)
@@ -60,7 +78,7 @@ export default function Admin() {
 
     const updateGuestStatus = async (id: string, attending: Guest['attending']) => {
         try {
-            const response = await fetch('/.netlify/functions/guests', {
+            const response = await fetch('/api/guests', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, attending }),
@@ -80,7 +98,7 @@ export default function Admin() {
         if (!confirm('¿Estás seguro de eliminar este invitado?')) return
 
         try {
-            const response = await fetch('/.netlify/functions/guests', {
+            const response = await fetch('/api/guests', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id }),
@@ -99,7 +117,7 @@ export default function Admin() {
 
         setSaving(true)
         try {
-            const response = await fetch('/.netlify/functions/guests', {
+            const response = await fetch('/api/guests', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -154,6 +172,35 @@ export default function Admin() {
     }
 
     const getInvitationLink = (code: string) => `${baseUrl}/invitation?code=${code}`
+
+    if (!isAuthenticated) {
+        return (
+            <main className="admin admin--login">
+                <div className="admin__login-container">
+                    <h1 className="admin__login-title">Acceso Administrador</h1>
+                    <form onSubmit={handleLogin} className="admin__login-form">
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => {
+                                setPassword(e.target.value)
+                                setLoginError(false)
+                            }}
+                            placeholder="Contraseña"
+                            className={`admin__login-input ${loginError ? 'admin__login-input--error' : ''}`}
+                            autoFocus
+                        />
+                        {loginError && (
+                            <p className="admin__login-error">Contraseña incorrecta</p>
+                        )}
+                        <button type="submit" className="admin__login-button">
+                            Entrar
+                        </button>
+                    </form>
+                </div>
+            </main>
+        )
+    }
 
     return (
         <main className="admin">

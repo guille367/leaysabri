@@ -2,24 +2,52 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import './styles.scss'
 
+interface Guest {
+    id: string
+    name: string
+    email: string
+    phone: string
+    attending: 'yes' | 'no' | 'pending'
+    guests: number
+    dietaryRestrictions: string
+    message: string
+    code: string
+}
+
 interface RSVPModalProps {
     isOpen: boolean
     onClose: () => void
+    guest?: Guest | null
+    code?: string
 }
 
-export default function RSVPModal({ isOpen, onClose }: RSVPModalProps) {
+export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalProps) {
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        attending: 'yes' as 'yes' | 'no',
-        guests: 1,
-        dietaryRestrictions: '',
-        message: '',
+        name: guest?.name || '',
+        email: guest?.email || '',
+        phone: guest?.phone || '',
+        attending: (guest?.attending === 'pending' ? 'yes' : guest?.attending) as 'yes' | 'no' || 'yes',
+        guests: guest?.guests || 1,
+        dietaryRestrictions: guest?.dietaryRestrictions || '',
+        message: guest?.message || '',
     })
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (guest) {
+            setFormData({
+                name: guest.name || '',
+                email: guest.email || '',
+                phone: guest.phone || '',
+                attending: (guest.attending === 'pending' ? 'yes' : guest.attending) as 'yes' | 'no' || 'yes',
+                guests: guest.guests || 1,
+                dietaryRestrictions: guest.dietaryRestrictions || '',
+                message: guest.message || '',
+            })
+        }
+    }, [guest])
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -45,10 +73,15 @@ export default function RSVPModal({ isOpen, onClose }: RSVPModalProps) {
         setError(null)
 
         try {
-            const response = await fetch('/.netlify/functions/guests', {
-                method: 'POST',
+            const isUpdate = guest?.id
+            const response = await fetch('/api/guests', {
+                method: isUpdate ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    ...(isUpdate ? { id: guest.id } : {}),
+                    code: code || '',
+                }),
             })
 
             if (!response.ok) {

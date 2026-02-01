@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import Letter from '@components/Letter';
+import Letter from '@/components/Letter';
 import Invitation from '../../Invitation';
 import ScrollHint from '../../Invitation/components/ScrollHint';
 

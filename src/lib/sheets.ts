@@ -11,13 +11,13 @@ function getAuth() {
     })
 }
 
-export async function getSheets() {
+async function getSheets() {
     const auth = await getAuth()
     return google.sheets({ version: 'v4', auth })
 }
 
-export const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || ''
-export const SHEET_NAME = 'Invitados'
+const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || ''
+const SHEET_NAME = 'Invitados'
 
 export interface Guest {
     id: string
@@ -104,11 +104,11 @@ export async function updateGuest(id: string, updates: Partial<Guest>): Promise<
     const updatedGuest: Guest = {
         ...guests[guestIndex],
         ...updates,
-        id, // Ensure ID doesn't change
+        id,
         updatedAt: new Date().toISOString(),
     }
 
-    const rowNumber = guestIndex + 2 // +2 because of header row and 0-index
+    const rowNumber = guestIndex + 2
 
     await sheets.spreadsheets.values.update({
         spreadsheetId: SPREADSHEET_ID,
@@ -143,7 +143,6 @@ export async function deleteGuest(id: string): Promise<boolean> {
 
     const rowNumber = guestIndex + 2
 
-    // Get spreadsheet to find sheet ID
     const spreadsheet = await sheets.spreadsheets.get({
         spreadsheetId: SPREADSHEET_ID,
     })
@@ -175,52 +174,4 @@ export async function deleteGuest(id: string): Promise<boolean> {
 export async function getGuestByCode(code: string): Promise<Guest | null> {
     const guests = await getGuests()
     return guests.find(g => g.code === code) || null
-}
-
-export async function initializeSheet(): Promise<void> {
-    const sheets = await getSheets()
-
-    try {
-        // Check if sheet exists
-        await sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
-            range: `${SHEET_NAME}!A1:K1`,
-        })
-    } catch {
-        // Create sheet with headers if it doesn't exist
-        await sheets.spreadsheets.batchUpdate({
-            spreadsheetId: SPREADSHEET_ID,
-            requestBody: {
-                requests: [{
-                    addSheet: {
-                        properties: {
-                            title: SHEET_NAME,
-                        },
-                    },
-                }],
-            },
-        })
-
-        // Add headers
-        await sheets.spreadsheets.values.update({
-            spreadsheetId: SPREADSHEET_ID,
-            range: `${SHEET_NAME}!A1:K1`,
-            valueInputOption: 'USER_ENTERED',
-            requestBody: {
-                values: [[
-                    'ID',
-                    'Invitado',
-                    'Email',
-                    'Teléfono',
-                    'Asiste',
-                    'Cantidad',
-                    'Restricciones',
-                    'Mensaje',
-                    'Código',
-                    'Creado',
-                    'Actualizado',
-                ]],
-            },
-        })
-    }
 }
