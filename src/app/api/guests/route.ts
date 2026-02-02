@@ -6,12 +6,19 @@ export const dynamic = 'force-dynamic'; // Esto desactiva el cacheo estático de
 export async function GET() {
     try {
         const guests = await getGuests()
-        return NextResponse.json({ guests })
+        return NextResponse.json(
+            { guests },
+            {
+                headers: {
+                    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                },
+            }
+        )
     } catch (error) {
         console.error('Error fetching guests:', error)
         return NextResponse.json(
             { error: 'Internal server error' },
-            { status: 500 }
+            { status: 500 },
         )
     }
 }
