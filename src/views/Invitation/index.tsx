@@ -9,6 +9,23 @@ import CTASection from './components/CTASection'
 import RSVPModal from './components/RSVPModal'
 import Footer from './components/Footer'
 
+interface Guest {
+    id: string
+    name: string
+    guests: string[]
+    guestsAmount: number
+    dietaryRestrictions: string
+    code: string
+    confirmado: boolean
+    createdAt: string
+    updatedAt: string
+}
+
+interface InvitationProps {
+    guest?: Guest | null
+    code?: string
+}
+
 // ============================================
 // CUSTOMIZABLE CONTENT - Edit these values
 // ============================================
@@ -22,10 +39,10 @@ const HERO_CONTENT: {
 } = {
     headline: '¡Nos Casamos!',
     subheadline: 'Y queremos compartir este día tan especial con vos',
-    backgroundImage: 'retrait.png', // Add your photo here
+    backgroundImage: 'retrait.png',
 }
 
-const EVENT = 
+const EVENT =
     {
         type: 'ceremony' as const,
         title: 'CEREMONIA & FIESTA',
@@ -55,21 +72,12 @@ const BANKING_DATA = {
     alias: 'LEA.SABRI.BODA',
 }
 
-// const ENGAGEMENT = {
-//     hashtag: '#LeaYSabri2025',
-//     hashtagDescription: 'Compartí tus fotos y videos usando nuestro hashtag',
-//     spotifyUrl: 'https://open.spotify.com/playlist/xxxxx', // Add your playlist URL
-//     spotifyDescription: 'Sugerí canciones para nuestra playlist',
-//     instagramUrl: 'https://instagram.com/leaysabri',
-// }
-
 const FOOTER = {
     message: 'Gracias por ser parte de este día tan especial',
     instagramUrl: 'https://instagram.com/leaysabri',
-    whatsappNumber: '+5491112345678', // Add contact number
+    whatsappNumber: '+5491112345678',
 }
 
-// Timeline photos - Add your photos here with their year
 const TIMELINE_PHOTOS = [
     { src: '/leaysabri01.jpg', alt: 'Nuestra historia', year: 2013 },
     { src: '/leaysabri02.jpg', alt: 'Nuestra historia', year: 2014 },
@@ -92,15 +100,21 @@ const TIMELINE_PHOTOS = [
 // PAGE COMPONENT
 // ============================================
 
-export default function Invitation() {
+export default function Invitation({ guest, code }: InvitationProps) {
     const [rsvpModalOpen, setRsvpModalOpen] = useState(false)
+    const [isConfirmed, setIsConfirmed] = useState(guest?.confirmado || false)
+
+    // Personalize subheadline if guest name is available
+    const personalizedSubheadline = guest?.name
+        ? `${guest.name}, queremos compartir este día tan especial con vos`
+        : HERO_CONTENT.subheadline
 
     return (
         <main className="inv-page">
             <HeroSection
                 coupleNames={COUPLE_NAMES}
                 headline={HERO_CONTENT.headline}
-                subheadline={HERO_CONTENT.subheadline}
+                subheadline={personalizedSubheadline}
                 backgroundImage={HERO_CONTENT.backgroundImage}
             />
 
@@ -109,6 +123,9 @@ export default function Invitation() {
             <EventsSection event={EVENT} />
 
             <CTASection
+                guestName={guest?.name}
+                guestsAmount={guest?.guestsAmount}
+                isConfirmed={isConfirmed}
                 rsvpTitle={CTA.rsvpTitle}
                 rsvpDescription={CTA.rsvpDescription}
                 rsvpButtonText={CTA.rsvpButtonText}
@@ -133,6 +150,9 @@ export default function Invitation() {
             <RSVPModal
                 isOpen={rsvpModalOpen}
                 onClose={() => setRsvpModalOpen(false)}
+                guest={guest}
+                code={code}
+                onConfirmed={() => setIsConfirmed(true)}
             />
         </main>
     )

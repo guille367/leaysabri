@@ -72,7 +72,7 @@ export async function updateGuest(
         ':updatedAt': now,
     }
 
-    const allowedFields = ['name', 'guests', 'guestsAmount', 'dietaryRestrictions', 'code', 'confirmado']
+    const allowedFields = [ 'guests',  'dietaryRestrictions', 'confirmado']
 
     for (const field of allowedFields) {
         if (field in updates) {
@@ -84,7 +84,7 @@ export async function updateGuest(
 
     const command = new UpdateCommand({
         TableName: TABLE_NAME,
-        Key: { id },
+        Key: { id, code: updates.code },
         UpdateExpression: `SET ${updateExpressions.join(', ')}`,
         ExpressionAttributeNames: expressionAttributeNames,
         ExpressionAttributeValues: expressionAttributeValues,
@@ -94,7 +94,8 @@ export async function updateGuest(
     try {
         const response = await docClient.send(command)
         return response.Attributes as Guest
-    } catch {
+    } catch(error) {
+        console.log(error)
         return null
     }
 }

@@ -8,6 +8,7 @@ interface ButtonProps {
     onClick?: () => void
     icon?: React.ReactNode
     fullWidth?: boolean
+    disabled?: boolean
     className?: string
 }
 
@@ -19,9 +20,10 @@ export default function Button({
     onClick,
     icon,
     fullWidth = false,
+    disabled = false,
     className = ''
 }: ButtonProps) {
-    const classes = `inv-button inv-button--${variant} inv-button--${size} ${fullWidth ? 'inv-button--full' : ''} ${className}`
+    const classes = `inv-button inv-button--${variant} inv-button--${size} ${fullWidth ? 'inv-button--full' : ''} ${disabled ? 'inv-button--disabled' : ''} ${className}`
 
     if (href) {
         return (
@@ -33,7 +35,7 @@ export default function Button({
     }
 
     return (
-        <button className={classes} onClick={onClick}>
+        <button className={classes} onClick={onClick} disabled={disabled}>
             {icon && <span className="inv-button__icon">{icon}</span>}
             {children}
         </button>

@@ -33,9 +33,11 @@ export default function Admin() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [modalOpen, setModalOpen] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [statFilter, setStatFilter] = useState<'all' | 'confirmed' | 'pending' | 'guests' | null>(null)
     const [newGuest, setNewGuest] = useState({
         name: '',
-        guestsAmount: 1,
+        guestsAmount: 0,
         code: '',
     })
 
@@ -67,26 +69,6 @@ export default function Admin() {
         localStorage.removeItem('admin_session')
     }
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            fetchGuests()
-        }
-    }, [isAuthenticated])
-
-    const fetchGuests = async () => {
-        try {
-            setLoading(true)
-            const response = await fetch('/api/guests')
-            const data = await response.json()
-            setGuests(data.guests || [])
-            setError(null)
-        } catch (err) {
-            setError('Error al cargar los invitados')
-            console.error(err)
-        } finally {
-            setLoading(false)
-        }
-    }
 
     const deleteGuest = async (id: string, code: string) => {
         if (!confirm('¿Estás seguro de eliminar este invitado?')) return
@@ -129,7 +111,7 @@ export default function Admin() {
                 setModalOpen(false)
                 setNewGuest({
                     name: '',
-                    guestsAmount: 1,
+                    guestsAmount: 0,
                     code: generateCode(),
                 })
             }
@@ -143,7 +125,7 @@ export default function Admin() {
     const openAddModal = () => {
         setNewGuest({
             name: '',
-            guestsAmount: 1,
+            guestsAmount: 0,
             code: generateCode(),
         })
         setModalOpen(true)
@@ -153,12 +135,37 @@ export default function Admin() {
         navigator.clipboard.writeText(text)
     }
 
+    const confirmedGuests = guests.filter(g => g.confirmado)
+    const pendingGuests = guests.filter(g => !g.confirmado)
+
     const stats = {
         total: guests.length,
-        totalGuests: guests.length,
+        confirmed: confirmedGuests.length,
+        pending: pendingGuests.length,
+        totalPeople: guests.reduce((acc, g) => acc + g.guestsAmount, 0),
     }
 
-    const getInvitationLink = (code: string) => `${baseUrl}/invitation?code=${code}`
+    const getInvitationLink = (code: string) => `${baseUrl}?code=${code}`
+
+    const filteredGuests = guests.filter(guest => {
+        // Search filter
+        const query = searchQuery.toLowerCase().trim()
+        if (query) {
+            const nameMatch = guest.name.toLowerCase().includes(query)
+            const guestsMatch = guest.guests.some(g => g.toLowerCase().includes(query))
+            if (!nameMatch && !guestsMatch) return false
+        }
+
+        // Stat filter
+        if (statFilter === 'confirmed') return guest.confirmado
+        if (statFilter === 'pending') return !guest.confirmado
+
+        return true
+    })
+
+    const handleStatClick = (filter: 'all' | 'confirmed' | 'pending' | 'guests') => {
+        setStatFilter(prev => prev === filter ? null : filter)
+    }
 
     if (!isAuthenticated) {
         return (
@@ -197,9 +204,6 @@ export default function Admin() {
                     <button className="admin__add" onClick={openAddModal}>
                         + Agregar invitado
                     </button>
-                    <button className="admin__refresh" onClick={fetchGuests}>
-                        Actualizar
-                    </button>
                     <button className="admin__logout" onClick={handleLogout}>
                         Salir
                     </button>
@@ -207,14 +211,52 @@ export default function Admin() {
             </div>
 
             <div className="admin__stats">
-                <div className="admin__stat">
+                <div
+                    className={`admin__stat ${statFilter === 'all' ? 'admin__stat--active' : ''}`}
+                    onClick={() => handleStatClick('all')}
+                >
                     <span className="admin__stat-value">{stats.total}</span>
                     <span className="admin__stat-label">Invitaciones</span>
                 </div>
-                <div className="admin__stat admin__stat--guests">
-                    <span className="admin__stat-value">{stats.totalGuests}</span>
+                <div
+                    className={`admin__stat admin__stat--confirmed ${statFilter === 'confirmed' ? 'admin__stat--active' : ''}`}
+                    onClick={() => handleStatClick('confirmed')}
+                >
+                    <span className="admin__stat-value">{stats.confirmed}</span>
+                    <span className="admin__stat-label">Confirmados</span>
+                </div>
+                <div
+                    className={`admin__stat admin__stat--pending ${statFilter === 'pending' ? 'admin__stat--active' : ''}`}
+                    onClick={() => handleStatClick('pending')}
+                >
+                    <span className="admin__stat-value">{stats.pending}</span>
+                    <span className="admin__stat-label">Pendientes</span>
+                </div>
+                <div
+                    className={`admin__stat admin__stat--guests ${statFilter === 'guests' ? 'admin__stat--active' : ''}`}
+                    onClick={() => handleStatClick('guests')}
+                >
+                    <span className="admin__stat-value">{stats.totalPeople}</span>
                     <span className="admin__stat-label">Total personas</span>
                 </div>
+            </div>
+
+            <div className="admin__search">
+                <input
+                    type="text"
+                    placeholder="Buscar por nombre o acompañantes..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="admin__search-input"
+                />
+                {(searchQuery || statFilter) && (
+                    <button
+                        className="admin__search-clear"
+                        onClick={() => { setSearchQuery(''); setStatFilter(null); }}
+                    >
+                        Limpiar filtros
+                    </button>
+                )}
             </div>
 
             {loading ? (
@@ -230,34 +272,22 @@ export default function Admin() {
                                 <th>Cantidad</th>
                                 <th>Acompañantes</th>
                                 <th>Restricciones</th>
-                                <th>Código</th>
+                                <th>Confirmado</th>
                                 <th>Link</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {guests.map(guest => (
+                            {filteredGuests.map(guest => (
                                 <tr key={guest.id} className="admin__row">
                                     <td>{guest.name}</td>
                                     <td>{guest.guestsAmount}</td>
                                     <td>{guest.guests.length > 0 ? guest.guests.join(', ') : '-'}</td>
                                     <td>{guest.dietaryRestrictions || '-'}</td>
                                     <td>
-                                        <div className="admin__code-cell">
-                                            <code>{guest.code || '-'}</code>
-                                            {guest.code && (
-                                                <button
-                                                    className="admin__copy"
-                                                    onClick={() => copyToClipboard(guest.code)}
-                                                    title="Copiar código"
-                                                >
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                                                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                                                    </svg>
-                                                </button>
-                                            )}
-                                        </div>
+                                        <span className={`admin__status ${guest.confirmado ? 'admin__status--confirmed' : 'admin__status--pending'}`}>
+                                            {guest.confirmado ? 'Si' : 'No'}
+                                        </span>
                                     </td>
                                     <td>
                                         {guest.code ? (
@@ -288,8 +318,10 @@ export default function Admin() {
                         </tbody>
                     </table>
 
-                    {guests.length === 0 && (
-                        <div className="admin__empty">No hay invitados</div>
+                    {filteredGuests.length === 0 && (
+                        <div className="admin__empty">
+                            {guests.length === 0 ? 'No hay invitados' : 'No se encontraron resultados'}
+                        </div>
                     )}
                 </div>
             )}
@@ -327,7 +359,7 @@ export default function Admin() {
                                     value={newGuest.guestsAmount}
                                     onChange={e => setNewGuest({ ...newGuest, guestsAmount: parseInt(e.target.value) })}
                                 >
-                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                                         <option key={n} value={n}>{n}</option>
                                     ))}
                                 </select>

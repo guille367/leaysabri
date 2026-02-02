@@ -30,8 +30,8 @@ export default function ScrollHint({
         <motion.button
             className={`scroll-hint scroll-hint--${variant} ${className}`}
             onClick={handleClick}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, y: [0, 10, 0] }}
+            // initial={{ opacity: 0 }}
+            animate={{ y: [0, 10, 0] }}
             transition={{
                 opacity: { delay: 1.2, duration: 0.6 },
                 y: { delay: 1.5, duration: 1.5, repeat: Infinity }

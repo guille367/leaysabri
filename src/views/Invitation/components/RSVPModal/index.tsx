@@ -19,38 +19,29 @@ interface RSVPModalProps {
     onClose: () => void
     guest?: Guest | null
     code?: string
+    onConfirmed?: () => void
 }
 
-const DIETARY_OPTIONS = [
-    { value: '', label: 'Sin restricciones' },
-    { value: 'vegetariano', label: 'Vegetariano' },
-    { value: 'vegano', label: 'Vegano' },
-    { value: 'celiaco', label: 'Celíaco' },
-    { value: 'kosher', label: 'Kosher' },
-    { value: 'otro', label: 'Otro' },
-]
-
-export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalProps) {
-    const [formData, setFormData] = useState({
-        name: guest?.name || '',
-        guestsAmount: guest?.guestsAmount || 1,
-        guests: guest?.guests || [],
-        dietaryRestrictions: guest?.dietaryRestrictions || '',
-    })
+export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }: RSVPModalProps) {
+    const [guestNames, setGuestNames] = useState<string[]>([])
+    const [dietaryRestrictions, setDietaryRestrictions] = useState('')
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
+    const hasGuests = (guest?.guestsAmount || 1) > 1
+    const guestsCount = (guest?.guestsAmount || 1) - 1 // Exclude the main guest
+
     useEffect(() => {
         if (guest) {
-            setFormData({
-                name: guest.name || '',
-                guestsAmount: guest.guestsAmount || 1,
-                guests: guest.guests || [],
-                dietaryRestrictions: guest.dietaryRestrictions || '',
-            })
+            // Initialize guest names array based on guestsAmount
+            const initialGuests = guest.guests?.length
+                ? [...guest.guests]
+                : Array(guestsCount).fill('')
+            setGuestNames(initialGuests)
+            setDietaryRestrictions(guest.dietaryRestrictions || '')
         }
-    }, [guest])
+    }, [guest, guestsCount])
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -70,47 +61,29 @@ export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalPro
         }
     }, [isOpen, onClose])
 
-    const handleGuestsAmountChange = (newAmount: number) => {
-        const currentGuests = [...formData.guests]
-        if (newAmount > formData.guestsAmount) {
-            // Add empty strings for new guests
-            while (currentGuests.length < newAmount - 1) {
-                currentGuests.push('')
-            }
-        } else {
-            // Remove extra guests
-            currentGuests.splice(newAmount - 1)
-        }
-        setFormData(prev => ({
-            ...prev,
-            guestsAmount: newAmount,
-            guests: currentGuests,
-        }))
-    }
-
     const handleGuestNameChange = (index: number, value: string) => {
-        const newGuests = [...formData.guests]
+        const newGuests = [...guestNames]
         newGuests[index] = value
-        setFormData(prev => ({
-            ...prev,
-            guests: newGuests,
-        }))
+        setGuestNames(newGuests)
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!guest?.id) return
+
         setLoading(true)
         setError(null)
 
         try {
-            const isUpdate = guest?.id
             const response = await fetch('/api/guests', {
-                method: isUpdate ? 'PUT' : 'POST',
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    ...formData,
-                    ...(isUpdate ? { id: guest.id } : {}),
-                    code: code || '',
+                    id: guest.id,
+                    guests: guestNames,
+                    dietaryRestrictions,
+                    confirmado: true,
+                    code: guest.code,
                 }),
             })
 
@@ -119,6 +92,7 @@ export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalPro
             }
 
             setSuccess(true)
+            onConfirmed?.()
         } catch (err) {
             setError('Hubo un error al enviar tu confirmación. Por favor intentá de nuevo.')
             console.error(err)
@@ -127,21 +101,7 @@ export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalPro
         }
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target
-        setFormData(prev => ({
-            ...prev,
-            [name]: value,
-        }))
-    }
-
     const resetAndClose = () => {
-        setFormData({
-            name: '',
-            guestsAmount: 1,
-            guests: [],
-            dietaryRestrictions: '',
-        })
         setSuccess(false)
         setError(null)
         onClose()
@@ -185,86 +145,92 @@ export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalPro
                                     </svg>
                                 </div>
                                 <h3>¡Gracias por confirmar!</h3>
-                                <p>Hemos recibido tu confirmación. Nos vemos pronto.</p>
+                                <p>Te esperamos con muchas ganas. ¡Nos vemos pronto!</p>
                                 <button className="rsvp-modal__button" onClick={resetAndClose}>
                                     Cerrar
                                 </button>
                             </div>
                         ) : (
                             <>
-                                <h2 className="rsvp-modal__title">Confirmá tu asistencia</h2>
+                                <h2 className="rsvp-modal__title">
+                                    {hasGuests
+                                        ? `${guest?.name}, confirmá tu asistencia`
+                                        : `¡Hola ${guest?.name}!`
+                                    }
+                                </h2>
 
-                                <form className="rsvp-modal__form" onSubmit={handleSubmit}>
-                                    <div className="rsvp-modal__field">
-                                        <label htmlFor="name">Tu nombre *</label>
-                                        <input
-                                            type="text"
-                                            id="name"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            required
-                                            placeholder="Tu nombre completo"
-                                        />
-                                    </div>
+                                {hasGuests ? (
+                                    <form className="rsvp-modal__form" onSubmit={handleSubmit}>
+                                        <p className="rsvp-modal__intro">
+                                            Por favor ingresá los nombres de tus acompañantes:
+                                        </p>
 
-                                    <div className="rsvp-modal__field">
-                                        <label htmlFor="guestsAmount">¿Cuántos asisten en total?</label>
-                                        <select
-                                            id="guestsAmount"
-                                            name="guestsAmount"
-                                            value={formData.guestsAmount}
-                                            onChange={(e) => handleGuestsAmountChange(parseInt(e.target.value))}
-                                        >
-                                            {[1, 2, 3, 4, 5].map(n => (
-                                                <option key={n} value={n}>{n}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    {formData.guestsAmount > 1 && (
                                         <div className="rsvp-modal__guests-list">
-                                            <label>Nombres de los acompañantes</label>
-                                            {Array.from({ length: formData.guestsAmount - 1 }).map((_, index) => (
-                                                <input
-                                                    key={index}
-                                                    type="text"
-                                                    value={formData.guests[index] || ''}
-                                                    onChange={(e) => handleGuestNameChange(index, e.target.value)}
-                                                    placeholder={`Acompañante ${index + 1}`}
-                                                />
+                                            {Array.from({ length: guestsCount }).map((_, index) => (
+                                                <div key={index} className="rsvp-modal__field">
+                                                    <input
+                                                        type="text"
+                                                        value={guestNames[index] || ''}
+                                                        onChange={(e) => handleGuestNameChange(index, e.target.value)}
+                                                        placeholder={`Acompañante ${index + 1}`}
+                                                    />
+                                                </div>
                                             ))}
                                         </div>
-                                    )}
 
-                                    <div className="rsvp-modal__field">
-                                        <label htmlFor="dietaryRestrictions">Restricciones alimentarias</label>
-                                        <select
-                                            id="dietaryRestrictions"
-                                            name="dietaryRestrictions"
-                                            value={formData.dietaryRestrictions}
-                                            onChange={handleChange}
+                                        <div className="rsvp-modal__field">
+                                            <label htmlFor="dietaryRestrictions">Restricciones alimentarias</label>
+                                            <input
+                                                type="text"
+                                                id="dietaryRestrictions"
+                                                value={dietaryRestrictions}
+                                                onChange={(e) => setDietaryRestrictions(e.target.value)}
+                                                placeholder="Ej: vegetariano, celíaco, etc."
+                                            />
+                                        </div>
+
+                                        {error && (
+                                            <div className="rsvp-modal__error">{error}</div>
+                                        )}
+
+                                        <button
+                                            type="submit"
+                                            className="rsvp-modal__button"
+                                            disabled={loading}
                                         >
-                                            {DIETARY_OPTIONS.map(option => (
-                                                <option key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                            {loading ? 'Enviando...' : 'Confirmar asistencia'}
+                                        </button>
+                                    </form>
+                                ) : (
+                                    <form className="rsvp-modal__form" onSubmit={handleSubmit}>
+                                        <p className="rsvp-modal__greeting">
+                                            ¡Qué alegría que puedas venir! Estamos muy emocionados de compartir este día tan especial con vos.
+                                        </p>
 
-                                    {error && (
-                                        <div className="rsvp-modal__error">{error}</div>
-                                    )}
+                                        <div className="rsvp-modal__field">
+                                            <label htmlFor="dietaryRestrictions">¿Tenés alguna restricción alimentaria?</label>
+                                            <input
+                                                type="text"
+                                                id="dietaryRestrictions"
+                                                value={dietaryRestrictions}
+                                                onChange={(e) => setDietaryRestrictions(e.target.value)}
+                                                placeholder="Ej: vegetariano, celíaco, etc."
+                                            />
+                                        </div>
 
-                                    <button
-                                        type="submit"
-                                        className="rsvp-modal__button"
-                                        disabled={loading}
-                                    >
-                                        {loading ? 'Enviando...' : 'Confirmar'}
-                                    </button>
-                                </form>
+                                        {error && (
+                                            <div className="rsvp-modal__error">{error}</div>
+                                        )}
+
+                                        <button
+                                            type="submit"
+                                            className="rsvp-modal__button"
+                                            disabled={loading}
+                                        >
+                                            {loading ? 'Enviando...' : '¡Confirmo mi asistencia!'}
+                                        </button>
+                                    </form>
+                                )}
                             </>
                         )}
                     </motion.div>

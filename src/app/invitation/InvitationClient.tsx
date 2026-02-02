@@ -90,6 +90,7 @@ const TIMELINE_PHOTOS = [
 
 export default function InvitationClient({ guest, code }: InvitationClientProps) {
     const [rsvpModalOpen, setRsvpModalOpen] = useState(false)
+    const [isConfirmed, setIsConfirmed] = useState(guest?.confirmado || false)
 
     // Personalize subheadline if guest name is available
     const personalizedSubheadline = guest?.name
@@ -112,6 +113,7 @@ export default function InvitationClient({ guest, code }: InvitationClientProps)
             <CTASection
                 guestName={guest?.name}
                 guestsAmount={guest?.guestsAmount}
+                isConfirmed={isConfirmed}
                 rsvpTitle={CTA.rsvpTitle}
                 rsvpDescription={CTA.rsvpDescription}
                 rsvpButtonText={CTA.rsvpButtonText}
@@ -138,6 +140,7 @@ export default function InvitationClient({ guest, code }: InvitationClientProps)
                 onClose={() => setRsvpModalOpen(false)}
                 guest={guest}
                 code={code}
+                onConfirmed={() => setIsConfirmed(true)}
             />
         </main>
     )

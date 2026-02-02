@@ -66,6 +66,29 @@
         gap: var(--inv-space-md);
     }
 
+    &__intro {
+        font-family: var(--inv-font-secondary);
+        font-size: var(--inv-text-base);
+        color: var(--inv-text-secondary);
+        text-align: center;
+        margin-bottom: var(--inv-space-sm);
+    }
+
+    &__greeting {
+        font-family: var(--inv-font-secondary);
+        font-size: var(--inv-text-lg);
+        color: var(--inv-text-primary);
+        text-align: center;
+        line-height: 1.6;
+        padding: var(--inv-space-lg) 0;
+    }
+
+    &__guests-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--inv-space-sm);
+    }
+
     &__row {
         display: grid;
         grid-template-columns: 1fr 1fr;

@@ -4,7 +4,24 @@ import Letter from '@/components/Letter';
 import Invitation from '../../Invitation';
 import ScrollHint from '../../Invitation/components/ScrollHint';
 
-export default function WeddingEnvelope() {
+interface Guest {
+    id: string
+    name: string
+    guests: string[]
+    guestsAmount: number
+    dietaryRestrictions: string
+    code: string
+    confirmado: boolean
+    createdAt: string
+    updatedAt: string
+}
+
+interface WeddingEnvelopeProps {
+    guest?: Guest | null
+    code?: string
+}
+
+export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const { scrollYProgress } = useScroll({
@@ -29,7 +46,7 @@ export default function WeddingEnvelope() {
     const heartOpacity = useTransform(scrollYProgress, [0.3, 0.5], [1, 1]);
 
     // Scroll hint fades out as you scroll
-    const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+    // const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
     return (
         <>
@@ -68,7 +85,7 @@ export default function WeddingEnvelope() {
                     {/* Scroll hint below envelope */}
                     <motion.div
                         className="envelope-scroll-hint"
-                        style={{ opacity: scrollHintOpacity }}
+                        // style={{ opacity: scrollHintOpacity }}
                     >
                         <ScrollHint variant="dark" text="Deslizá para abrir" />
                     </motion.div>
@@ -76,7 +93,7 @@ export default function WeddingEnvelope() {
             </div>
 
             {/* Full Invitation Content */}
-            <Invitation />
+            <Invitation guest={guest} code={code} />
         </>
     );
 }

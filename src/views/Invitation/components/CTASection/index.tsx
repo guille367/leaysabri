@@ -14,6 +14,7 @@ interface BankingData {
 interface CTASectionProps {
     guestName?: string
     guestsAmount?: number
+    isConfirmed?: boolean
     rsvpTitle?: string
     rsvpDescription?: string
     rsvpButtonText?: string
@@ -30,6 +31,7 @@ interface CTASectionProps {
 export default function CTASection({
     guestName,
     guestsAmount = 1,
+    isConfirmed = false,
     rsvpTitle = '¿Venís?',
     rsvpDescription = 'Para una mejor organización, es muy importante que nos ayudes confirmando tu asistencia:',
     rsvpButtonText = 'RSVP',
@@ -88,10 +90,19 @@ export default function CTASection({
                 transition={{ duration: 0.6 }}
             >
                 <h2 className="inv-cta__title">
-                    {rsvpTitle}
+                    {isConfirmed ? '¡Gracias por confirmar!' : rsvpTitle}
                 </h2>
-                <p className="inv-cta__description">{personalizedDescription}</p>
-                {onRSVPClick ? (
+                <p className="inv-cta__description">
+                    {isConfirmed
+                        ? `${guestName}, ya confirmaste tu asistencia. ¡Nos vemos pronto!`
+                        : personalizedDescription
+                    }
+                </p>
+                {isConfirmed ? (
+                    <Button variant="primary" disabled>
+                        Te esperamos ❤️
+                    </Button>
+                ) : onRSVPClick ? (
                     <Button onClick={onRSVPClick} variant="primary">
                         {rsvpButtonText}
                     </Button>
