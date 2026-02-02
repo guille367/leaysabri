@@ -6,12 +6,9 @@ const ADMIN_PASSWORD = 'LEASABRIW'
 interface Guest {
     id: string
     name: string
-    email: string
-    phone: string
-    attending: 'yes' | 'no' | 'pending'
-    guests: number
+    guests: string[]
+    guestsAmount: number
     dietaryRestrictions: string
-    message: string
     code: string
     createdAt: string
     updatedAt: string
@@ -27,7 +24,6 @@ function generateCode(): string {
 }
 
 export default function Admin() {
-    const [mounted, setMounted] = useState(false)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState(false)
@@ -35,18 +31,20 @@ export default function Admin() {
     const [guests, setGuests] = useState<Guest[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [filter, setFilter] = useState<'all' | 'yes' | 'pending'>('all')
     const [modalOpen, setModalOpen] = useState(false)
     const [newGuest, setNewGuest] = useState({
         name: '',
-        guests: 1,
+        guestsAmount: 1,
         code: '',
     })
 
-    // Mark as mounted on client side to avoid hydration issues
+    // Check for existing session on mount
     useEffect(() => {
-        setMounted(true)
         setNewGuest(prev => ({ ...prev, code: generateCode() }))
+        const session = localStorage.getItem('admin_session')
+        if (session === 'authenticated') {
+            setIsAuthenticated(true)
+        }
     }, [])
     const [saving, setSaving] = useState(false)
 
@@ -57,9 +55,15 @@ export default function Admin() {
         if (password === ADMIN_PASSWORD) {
             setIsAuthenticated(true)
             setLoginError(false)
+            localStorage.setItem('admin_session', 'authenticated')
         } else {
             setLoginError(true)
         }
+    }
+
+    const handleLogout = () => {
+        setIsAuthenticated(false)
+        localStorage.removeItem('admin_session')
     }
 
     useEffect(() => {
@@ -83,32 +87,14 @@ export default function Admin() {
         }
     }
 
-    const updateGuestStatus = async (id: string, attending: Guest['attending']) => {
-        try {
-            const response = await fetch('/api/guests', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, attending }),
-            })
-
-            if (response.ok) {
-                setGuests(guests.map(g =>
-                    g.id === id ? { ...g, attending } : g
-                ))
-            }
-        } catch (err) {
-            console.error('Error updating guest:', err)
-        }
-    }
-
-    const deleteGuest = async (id: string) => {
+    const deleteGuest = async (id: string, code: string) => {
         if (!confirm('¿Estás seguro de eliminar este invitado?')) return
 
         try {
             const response = await fetch('/api/guests', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id }),
+                body: JSON.stringify({ id, code }),
             })
 
             if (response.ok) {
@@ -129,9 +115,10 @@ export default function Admin() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: newGuest.name,
-                    guests: newGuest.guests,
+                    guestsAmount: newGuest.guestsAmount,
+                    guests: [],
+                    dietaryRestrictions: '',
                     code: newGuest.code,
-                    attending: 'pending',
                 }),
             })
 
@@ -141,7 +128,7 @@ export default function Admin() {
                 setModalOpen(false)
                 setNewGuest({
                     name: '',
-                    guests: 1,
+                    guestsAmount: 1,
                     code: generateCode(),
                 })
             }
@@ -155,7 +142,7 @@ export default function Admin() {
     const openAddModal = () => {
         setNewGuest({
             name: '',
-            guests: 1,
+            guestsAmount: 1,
             code: generateCode(),
         })
         setModalOpen(true)
@@ -165,17 +152,9 @@ export default function Admin() {
         navigator.clipboard.writeText(text)
     }
 
-    const filteredGuests = guests.filter(g =>
-        filter === 'all' ? true : g.attending === filter
-    )
-
     const stats = {
         total: guests.length,
-        confirmed: guests.filter(g => g.attending === 'yes').length,
-        pending: guests.filter(g => g.attending === 'pending').length,
-        totalGuests: guests
-            .filter(g => g.attending === 'yes')
-            .reduce((sum, g) => sum + g.guests, 0),
+        totalGuests: guests.reduce((sum, g) => sum + g.guestsAmount, 0),
     }
 
     const getInvitationLink = (code: string) => `${baseUrl}/invitation?code=${code}`
@@ -220,47 +199,21 @@ export default function Admin() {
                     <button className="admin__refresh" onClick={fetchGuests}>
                         Actualizar
                     </button>
+                    <button className="admin__logout" onClick={handleLogout}>
+                        Salir
+                    </button>
                 </div>
             </div>
 
             <div className="admin__stats">
                 <div className="admin__stat">
                     <span className="admin__stat-value">{stats.total}</span>
-                    <span className="admin__stat-label">Total</span>
-                </div>
-                <div className="admin__stat admin__stat--confirmed">
-                    <span className="admin__stat-value">{stats.confirmed}</span>
-                    <span className="admin__stat-label">Confirmados</span>
-                </div>
-                <div className="admin__stat admin__stat--pending">
-                    <span className="admin__stat-value">{stats.pending}</span>
-                    <span className="admin__stat-label">Pendientes</span>
+                    <span className="admin__stat-label">Invitaciones</span>
                 </div>
                 <div className="admin__stat admin__stat--guests">
                     <span className="admin__stat-value">{stats.totalGuests}</span>
-                    <span className="admin__stat-label">Asistentes</span>
+                    <span className="admin__stat-label">Total personas</span>
                 </div>
-            </div>
-
-            <div className="admin__filters">
-                <button
-                    className={`admin__filter ${filter === 'all' ? 'admin__filter--active' : ''}`}
-                    onClick={() => setFilter('all')}
-                >
-                    Todos
-                </button>
-                <button
-                    className={`admin__filter ${filter === 'yes' ? 'admin__filter--active' : ''}`}
-                    onClick={() => setFilter('yes')}
-                >
-                    Confirmados
-                </button>
-                <button
-                    className={`admin__filter ${filter === 'pending' ? 'admin__filter--active' : ''}`}
-                    onClick={() => setFilter('pending')}
-                >
-                    Pendientes
-                </button>
             </div>
 
             {loading ? (
@@ -274,17 +227,20 @@ export default function Admin() {
                             <tr>
                                 <th>Invitado</th>
                                 <th>Cantidad</th>
+                                <th>Acompañantes</th>
+                                <th>Restricciones</th>
                                 <th>Código</th>
                                 <th>Link</th>
-                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredGuests.map(guest => (
-                                <tr key={guest.id} className={`admin__row admin__row--${guest.attending}`}>
+                            {guests.map(guest => (
+                                <tr key={guest.id} className="admin__row">
                                     <td>{guest.name}</td>
-                                    <td>{guest.guests}</td>
+                                    <td>{guest.guestsAmount}</td>
+                                    <td>{guest.guests.length > 0 ? guest.guests.join(', ') : '-'}</td>
+                                    <td>{guest.dietaryRestrictions || '-'}</td>
                                     <td>
                                         <div className="admin__code-cell">
                                             <code>{guest.code || '-'}</code>
@@ -316,19 +272,9 @@ export default function Admin() {
                                         ) : '-'}
                                     </td>
                                     <td>
-                                        <select
-                                            value={guest.attending}
-                                            onChange={(e) => updateGuestStatus(guest.id, e.target.value as Guest['attending'])}
-                                            className={`admin__status admin__status--${guest.attending}`}
-                                        >
-                                            <option value="pending">Pendiente</option>
-                                            <option value="yes">Confirmado</option>
-                                        </select>
-                                    </td>
-                                    <td>
                                         <button
                                             className="admin__delete"
-                                            onClick={() => deleteGuest(guest.id)}
+                                            onClick={() => deleteGuest(guest.id, guest.code)}
                                             aria-label="Eliminar"
                                         >
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -341,8 +287,8 @@ export default function Admin() {
                         </tbody>
                     </table>
 
-                    {filteredGuests.length === 0 && (
-                        <div className="admin__empty">No hay invitados en esta categoría</div>
+                    {guests.length === 0 && (
+                        <div className="admin__empty">No hay invitados</div>
                     )}
                 </div>
             )}
@@ -377,8 +323,8 @@ export default function Admin() {
                             <div className="admin__modal-field">
                                 <label>Cantidad de invitados</label>
                                 <select
-                                    value={newGuest.guests}
-                                    onChange={e => setNewGuest({ ...newGuest, guests: parseInt(e.target.value) })}
+                                    value={newGuest.guestsAmount}
+                                    onChange={e => setNewGuest({ ...newGuest, guestsAmount: parseInt(e.target.value) })}
                                 >
                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                                         <option key={n} value={n}>{n}</option>

@@ -29,9 +29,8 @@ Defined in `src/app/`:
 - `src/views/` - Page view components (Home, Invitation, Admin)
 - `src/views/[View]/components/` - View-specific components
 - `src/components/` - Shared components
-- `src/lib/` - Utilities (Google Sheets integration)
+- `src/lib/` - Utilities (DynamoDB integration)
 - `src/styles/` - Global SCSS with CSS custom properties
-- `amplify/` - AWS Amplify backend configuration
 
 ### Path Alias
 
@@ -40,14 +39,16 @@ Configured in `tsconfig.json`:
 
 ### Backend
 
-Guest data stored in Google Sheets via `src/lib/sheets.ts`. Requires environment variables:
-- `GOOGLE_SERVICE_ACCOUNT` - Service account JSON credentials
-- `GOOGLE_SPREADSHEET_ID` - Target spreadsheet ID
+Guest data stored in AWS DynamoDB via `src/lib/dynamodb.ts`. Requires environment variables:
+- `AWS_REGION` - AWS region (default: us-east-1)
+- `AWS_ACCESS_KEY_ID` - IAM user access key
+- `AWS_SECRET_ACCESS_KEY` - IAM user secret key
+- `DYNAMODB_TABLE` - Table name (sandbox: `leaysabri-guests-sandbox`, prod: `leaysabri-guests-prod`)
 
 ### Key Dependencies
 
 - **framer-motion** - Scroll-linked animations (envelope, transitions)
-- **googleapis** - Google Sheets API for guest management
+- **@aws-sdk/client-dynamodb** - AWS DynamoDB client for guest management
 - **sass** - SCSS styling with CSS custom properties
 
 ### Design System

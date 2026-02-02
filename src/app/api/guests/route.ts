@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getGuests, addGuest, updateGuest, deleteGuest } from '@/lib/sheets'
+import { getGuests, addGuest, updateGuest, deleteGuest } from '@/lib/dynamodb'
 
 export async function GET() {
     try {
@@ -27,12 +27,9 @@ export async function POST(request: NextRequest) {
 
         const guest = await addGuest({
             name: body.name,
-            email: body.email || '',
-            phone: body.phone || '',
-            attending: body.attending || 'pending',
-            guests: body.guests || 1,
+            guests: body.guests || [],
+            guestsAmount: body.guestsAmount || 1,
             dietaryRestrictions: body.dietaryRestrictions || '',
-            message: body.message || '',
             code: body.code || '',
         })
 
@@ -80,14 +77,14 @@ export async function DELETE(request: NextRequest) {
     try {
         const body = await request.json()
 
-        if (!body.id) {
+        if (!body.id || !body.code) {
             return NextResponse.json(
-                { error: 'Guest ID is required' },
+                { error: 'Guest ID and code are required' },
                 { status: 400 }
             )
         }
 
-        const deleted = await deleteGuest(body.id)
+        const deleted = await deleteGuest(body.id, body.code)
 
         if (!deleted) {
             return NextResponse.json(

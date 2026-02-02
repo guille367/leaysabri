@@ -14,13 +14,12 @@ import Footer from '@/views/Invitation/components/Footer'
 interface Guest {
     id: string
     name: string
-    email: string
-    phone: string
-    attending: 'yes' | 'no' | 'pending'
-    guests: number
+    guests: string[]
+    guestsAmount: number
     dietaryRestrictions: string
-    message: string
     code: string
+    createdAt: string
+    updatedAt: string
 }
 
 interface InvitationClientProps {

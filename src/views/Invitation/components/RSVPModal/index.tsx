@@ -5,13 +5,12 @@ import './styles.scss'
 interface Guest {
     id: string
     name: string
-    email: string
-    phone: string
-    attending: 'yes' | 'no' | 'pending'
-    guests: number
+    guests: string[]
+    guestsAmount: number
     dietaryRestrictions: string
-    message: string
     code: string
+    createdAt: string
+    updatedAt: string
 }
 
 interface RSVPModalProps {
@@ -21,15 +20,21 @@ interface RSVPModalProps {
     code?: string
 }
 
+const DIETARY_OPTIONS = [
+    { value: '', label: 'Sin restricciones' },
+    { value: 'vegetariano', label: 'Vegetariano' },
+    { value: 'vegano', label: 'Vegano' },
+    { value: 'celiaco', label: 'Celíaco' },
+    { value: 'kosher', label: 'Kosher' },
+    { value: 'otro', label: 'Otro' },
+]
+
 export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalProps) {
     const [formData, setFormData] = useState({
         name: guest?.name || '',
-        email: guest?.email || '',
-        phone: guest?.phone || '',
-        attending: (guest?.attending === 'pending' ? 'yes' : guest?.attending) as 'yes' | 'no' || 'yes',
-        guests: guest?.guests || 1,
+        guestsAmount: guest?.guestsAmount || 1,
+        guests: guest?.guests || [],
         dietaryRestrictions: guest?.dietaryRestrictions || '',
-        message: guest?.message || '',
     })
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
@@ -39,12 +44,9 @@ export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalPro
         if (guest) {
             setFormData({
                 name: guest.name || '',
-                email: guest.email || '',
-                phone: guest.phone || '',
-                attending: (guest.attending === 'pending' ? 'yes' : guest.attending) as 'yes' | 'no' || 'yes',
-                guests: guest.guests || 1,
+                guestsAmount: guest.guestsAmount || 1,
+                guests: guest.guests || [],
                 dietaryRestrictions: guest.dietaryRestrictions || '',
-                message: guest.message || '',
             })
         }
     }, [guest])
@@ -66,6 +68,33 @@ export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalPro
             window.removeEventListener('keydown', handleKeyDown)
         }
     }, [isOpen, onClose])
+
+    const handleGuestsAmountChange = (newAmount: number) => {
+        const currentGuests = [...formData.guests]
+        if (newAmount > formData.guestsAmount) {
+            // Add empty strings for new guests
+            while (currentGuests.length < newAmount - 1) {
+                currentGuests.push('')
+            }
+        } else {
+            // Remove extra guests
+            currentGuests.splice(newAmount - 1)
+        }
+        setFormData(prev => ({
+            ...prev,
+            guestsAmount: newAmount,
+            guests: currentGuests,
+        }))
+    }
+
+    const handleGuestNameChange = (index: number, value: string) => {
+        const newGuests = [...formData.guests]
+        newGuests[index] = value
+        setFormData(prev => ({
+            ...prev,
+            guests: newGuests,
+        }))
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -97,23 +126,20 @@ export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalPro
         }
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         setFormData(prev => ({
             ...prev,
-            [name]: name === 'guests' ? parseInt(value) || 1 : value,
+            [name]: value,
         }))
     }
 
     const resetAndClose = () => {
         setFormData({
             name: '',
-            email: '',
-            phone: '',
-            attending: 'yes',
-            guests: 1,
+            guestsAmount: 1,
+            guests: [],
             dietaryRestrictions: '',
-            message: '',
         })
         setSuccess(false)
         setError(null)
@@ -169,7 +195,7 @@ export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalPro
 
                                 <form className="rsvp-modal__form" onSubmit={handleSubmit}>
                                     <div className="rsvp-modal__field">
-                                        <label htmlFor="name">Nombre completo *</label>
+                                        <label htmlFor="name">Tu nombre *</label>
                                         <input
                                             type="text"
                                             id="name"
@@ -177,91 +203,53 @@ export default function RSVPModal({ isOpen, onClose, guest, code }: RSVPModalPro
                                             value={formData.name}
                                             onChange={handleChange}
                                             required
-                                            placeholder="Tu nombre"
+                                            placeholder="Tu nombre completo"
                                         />
                                     </div>
 
-                                    <div className="rsvp-modal__row">
-                                        <div className="rsvp-modal__field">
-                                            <label htmlFor="email">Email</label>
-                                            <input
-                                                type="email"
-                                                id="email"
-                                                name="email"
-                                                value={formData.email}
-                                                onChange={handleChange}
-                                                placeholder="tu@email.com"
-                                            />
-                                        </div>
-
-                                        <div className="rsvp-modal__field">
-                                            <label htmlFor="phone">Teléfono</label>
-                                            <input
-                                                type="tel"
-                                                id="phone"
-                                                name="phone"
-                                                value={formData.phone}
-                                                onChange={handleChange}
-                                                placeholder="+54 11 1234-5678"
-                                            />
-                                        </div>
+                                    <div className="rsvp-modal__field">
+                                        <label htmlFor="guestsAmount">¿Cuántos asisten en total?</label>
+                                        <select
+                                            id="guestsAmount"
+                                            name="guestsAmount"
+                                            value={formData.guestsAmount}
+                                            onChange={(e) => handleGuestsAmountChange(parseInt(e.target.value))}
+                                        >
+                                            {[1, 2, 3, 4, 5].map(n => (
+                                                <option key={n} value={n}>{n}</option>
+                                            ))}
+                                        </select>
                                     </div>
 
-                                    <div className="rsvp-modal__row">
-                                        <div className="rsvp-modal__field">
-                                            <label htmlFor="attending">¿Vas a asistir?</label>
-                                            <select
-                                                id="attending"
-                                                name="attending"
-                                                value={formData.attending}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="yes">Sí, voy a asistir</option>
-                                                <option value="no">No puedo asistir</option>
-                                            </select>
-                                        </div>
-
-                                        {formData.attending === 'yes' && (
-                                            <div className="rsvp-modal__field">
-                                                <label htmlFor="guests">¿Cuántos asisten?</label>
-                                                <select
-                                                    id="guests"
-                                                    name="guests"
-                                                    value={formData.guests}
-                                                    onChange={handleChange}
-                                                >
-                                                    {[1, 2, 3, 4, 5].map(n => (
-                                                        <option key={n} value={n}>{n}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {formData.attending === 'yes' && (
-                                        <div className="rsvp-modal__field">
-                                            <label htmlFor="dietaryRestrictions">Restricciones alimentarias</label>
-                                            <input
-                                                type="text"
-                                                id="dietaryRestrictions"
-                                                name="dietaryRestrictions"
-                                                value={formData.dietaryRestrictions}
-                                                onChange={handleChange}
-                                                placeholder="Vegetariano, celíaco, etc."
-                                            />
+                                    {formData.guestsAmount > 1 && (
+                                        <div className="rsvp-modal__guests-list">
+                                            <label>Nombres de los acompañantes</label>
+                                            {Array.from({ length: formData.guestsAmount - 1 }).map((_, index) => (
+                                                <input
+                                                    key={index}
+                                                    type="text"
+                                                    value={formData.guests[index] || ''}
+                                                    onChange={(e) => handleGuestNameChange(index, e.target.value)}
+                                                    placeholder={`Acompañante ${index + 1}`}
+                                                />
+                                            ))}
                                         </div>
                                     )}
 
                                     <div className="rsvp-modal__field">
-                                        <label htmlFor="message">Mensaje (opcional)</label>
-                                        <textarea
-                                            id="message"
-                                            name="message"
-                                            value={formData.message}
+                                        <label htmlFor="dietaryRestrictions">Restricciones alimentarias</label>
+                                        <select
+                                            id="dietaryRestrictions"
+                                            name="dietaryRestrictions"
+                                            value={formData.dietaryRestrictions}
                                             onChange={handleChange}
-                                            placeholder="Dejanos un mensaje..."
-                                            rows={3}
-                                        />
+                                        >
+                                            {DIETARY_OPTIONS.map(option => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
 
                                     {error && (

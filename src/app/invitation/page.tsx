@@ -1,4 +1,4 @@
-import { getGuestByCode } from '@/lib/sheets'
+import { getGuestByCode } from '@/lib/dynamodb'
 import InvitationClient from './InvitationClient'
 
 interface PageProps {
