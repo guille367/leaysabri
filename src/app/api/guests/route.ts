@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getGuests, addGuest, updateGuest, deleteGuest } from '@/lib/dynamodb'
 
+export const dynamic = 'force-dynamic'; // Esto desactiva el cacheo estático de esta ruta
+
 export async function GET() {
     try {
         const guests = await getGuests()
