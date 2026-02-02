@@ -32,10 +32,11 @@ export async function getGuests(): Promise<Guest[]> {
         const command = new ScanCommand({
             TableName: TABLE_NAME,
         })
-
+console.log('Fetching guests from ' + TABLE_NAME)
         const response = await docClient.send(command)
+        console.log(`Fetching guests ok!: ${response.Count}`)
         return (response.Items as Guest[]) || []
-        }
+    }
     catch(err) {
         console.log('failed fetching guests: ' + err)
         return [];
