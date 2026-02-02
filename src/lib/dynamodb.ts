@@ -13,7 +13,7 @@ const client = new DynamoDBClient({
 
 const docClient = DynamoDBDocumentClient.from(client)
 
-const TABLE_NAME = process.env.DYNAMODB_TABLE || 'leaysabri-guests-sandbox'
+const TABLE_NAME = process.env.DYNAMODB_TABLE || 'leaysabri-guests-prod'
 
 export interface Guest {
     id: string
@@ -37,7 +37,7 @@ export async function getGuests(): Promise<Guest[]> {
         return (response.Items as Guest[]) || []
         }
     catch(err) {
-        console.log(err)
+        console.log('failed fetching guests: ' + err)
         return [];
     }
 }
