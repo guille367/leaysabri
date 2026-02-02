@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
             guestsAmount: body.guestsAmount || 1,
             dietaryRestrictions: body.dietaryRestrictions || '',
             code: body.code || '',
+            confirmado: body.confirmado ?? false,
         })
 
         return NextResponse.json({ guest }, { status: 201 })

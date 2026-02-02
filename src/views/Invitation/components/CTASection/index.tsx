@@ -12,6 +12,8 @@ interface BankingData {
 }
 
 interface CTASectionProps {
+    guestName?: string
+    guestsAmount?: number
     rsvpTitle?: string
     rsvpDescription?: string
     rsvpButtonText?: string
@@ -26,6 +28,8 @@ interface CTASectionProps {
 }
 
 export default function CTASection({
+    guestName,
+    guestsAmount = 1,
     rsvpTitle = '¿Venís?',
     rsvpDescription = 'Para una mejor organización, es muy importante que nos ayudes confirmando tu asistencia:',
     rsvpButtonText = 'RSVP',
@@ -38,6 +42,13 @@ export default function CTASection({
     bankingData,
     className = ''
 }: CTASectionProps) {
+   
+
+    const personalizedDescription = guestName
+        ? guestsAmount > 1
+            ? `${guestName}, nos encantaría que vos y tus invitados vengan. Para una mejor organización, es muy importante que nos ayudes confirmando su asistencia`
+            : `${guestName}, nos encantaría que vengas. Para una mejor organización, es muy importante que nos ayudes confirmando tu asistencia.`
+        : rsvpDescription
     const [modalOpen, setModalOpen] = useState(false)
 
     const openModal = () => {
@@ -76,8 +87,10 @@ export default function CTASection({
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.6 }}
             >
-                <h2 className="inv-cta__title">{rsvpTitle}</h2>
-                <p className="inv-cta__description">{rsvpDescription}</p>
+                <h2 className="inv-cta__title">
+                    {rsvpTitle}
+                </h2>
+                <p className="inv-cta__description">{personalizedDescription}</p>
                 {onRSVPClick ? (
                     <Button onClick={onRSVPClick} variant="primary">
                         {rsvpButtonText}

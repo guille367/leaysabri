@@ -9,6 +9,7 @@ interface Guest {
     guestsAmount: number
     dietaryRestrictions: string
     code: string
+    confirmado: boolean
     createdAt: string
     updatedAt: string
 }

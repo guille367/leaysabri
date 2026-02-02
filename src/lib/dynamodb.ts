@@ -5,7 +5,6 @@ import {
     PutCommand,
     UpdateCommand,
     DeleteCommand,
-    QueryCommand,
 } from '@aws-sdk/lib-dynamodb'
 
 const client = new DynamoDBClient({
@@ -23,6 +22,7 @@ export interface Guest {
     guestsAmount: number
     dietaryRestrictions: string
     code: string
+    confirmado: boolean
     createdAt: string
     updatedAt: string
 }
@@ -72,7 +72,7 @@ export async function updateGuest(
         ':updatedAt': now,
     }
 
-    const allowedFields = ['name', 'guests', 'guestsAmount', 'dietaryRestrictions', 'code']
+    const allowedFields = ['name', 'guests', 'guestsAmount', 'dietaryRestrictions', 'code', 'confirmado']
 
     for (const field of allowedFields) {
         if (field in updates) {
@@ -115,10 +115,10 @@ export async function deleteGuest(id: string, code: string): Promise<boolean> {
 }
 
 export async function getGuestByCode(code: string): Promise<Guest | null> {
-    const command = new QueryCommand({
+    // Use Scan with filter since code is not the partition key
+    const command = new ScanCommand({
         TableName: TABLE_NAME,
-        IndexName: 'code-index',
-        KeyConditionExpression: '#code = :code',
+        FilterExpression: '#code = :code',
         ExpressionAttributeNames: {
             '#code': 'code',
         },
@@ -133,7 +133,8 @@ export async function getGuestByCode(code: string): Promise<Guest | null> {
             return response.Items[0] as Guest
         }
         return null
-    } catch {
+    } catch(error) {
+        console.log(error)
         return null
     }
 }

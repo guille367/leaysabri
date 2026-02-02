@@ -10,6 +10,7 @@ interface Guest {
     guestsAmount: number
     dietaryRestrictions: string
     code: string
+    confirmado: boolean
     createdAt: string
     updatedAt: string
 }
@@ -154,7 +155,7 @@ export default function Admin() {
 
     const stats = {
         total: guests.length,
-        totalGuests: guests.reduce((sum, g) => sum + g.guestsAmount, 0),
+        totalGuests: guests.length,
     }
 
     const getInvitationLink = (code: string) => `${baseUrl}/invitation?code=${code}`
@@ -266,7 +267,7 @@ export default function Admin() {
                                                     onClick={() => copyToClipboard(getInvitationLink(guest.code))}
                                                     title="Copiar link"
                                                 >
-                                                    Copiar link
+                                                    Copiar link de invitación
                                                 </button>
                                             </div>
                                         ) : '-'}

@@ -18,6 +18,7 @@ interface Guest {
     guestsAmount: number
     dietaryRestrictions: string
     code: string
+    confirmado: boolean
     createdAt: string
     updatedAt: string
 }
@@ -109,6 +110,8 @@ export default function InvitationClient({ guest, code }: InvitationClientProps)
             <EventsSection event={EVENT} />
 
             <CTASection
+                guestName={guest?.name}
+                guestsAmount={guest?.guestsAmount}
                 rsvpTitle={CTA.rsvpTitle}
                 rsvpDescription={CTA.rsvpDescription}
                 rsvpButtonText={CTA.rsvpButtonText}
