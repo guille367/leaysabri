@@ -1,5 +1,8 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import './styles.scss'
+import { getGuests } from '@/lib/dynamodb'
 
 const ADMIN_PASSWORD = 'LEASABRIW'
 
@@ -24,13 +27,17 @@ function generateCode(): string {
     return code
 }
 
-export default function Admin() {
+export type AdminFormTypes = {
+    initialGuests: Guest[]
+}
+
+export default function Admin({ initialGuests = [] }: AdminFormTypes) {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState(false)
 
-    const [guests, setGuests] = useState<Guest[]>([])
-    const [loading, setLoading] = useState(true)
+
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [modalOpen, setModalOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
@@ -40,6 +47,7 @@ export default function Admin() {
         guestsAmount: 0,
         code: '',
     })
+    const [guests, setGuests] = useState(initialGuests);
 
     // Check for existing session on mount
     useEffect(() => {

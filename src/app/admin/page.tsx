@@ -1,7 +1,11 @@
-'use client'
-
+'use server';
+import { getGuests } from '@/lib/dynamodb';
 import Admin from '@/views/Admin'
 
-export default function AdminPage() {
-    return <Admin />
+
+export default async function AdminPage() {
+
+
+        const initialGuests = await getGuests();
+    return <Admin initialGuests={initialGuests}/>
 }
