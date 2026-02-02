@@ -28,12 +28,18 @@ export interface Guest {
 }
 
 export async function getGuests(): Promise<Guest[]> {
-    const command = new ScanCommand({
-        TableName: TABLE_NAME,
-    })
+    try {
+        const command = new ScanCommand({
+            TableName: TABLE_NAME,
+        })
 
-    const response = await docClient.send(command)
-    return (response.Items as Guest[]) || []
+        const response = await docClient.send(command)
+        return (response.Items as Guest[]) || []
+        }
+    catch(err) {
+        console.log(err)
+        return [];
+    }
 }
 
 export async function addGuest(
