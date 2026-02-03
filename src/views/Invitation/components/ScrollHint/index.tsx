@@ -20,7 +20,7 @@ export default function ScrollHint({
             onClick()
         } else {
             window.scrollTo({
-                top: window.scrollY + window.innerHeight,
+                top: window.scrollY + (window.innerHeight * 2),
                 behavior: 'smooth'
             })
         }
