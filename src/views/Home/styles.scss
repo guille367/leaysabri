@@ -18,21 +18,49 @@
 
         >.envelope {
             position: relative;
-            width: 300px;
-            height: 230px;
-            background: var(--inv-bg-card);
-            border-radius: var(--inv-radius-lg);
-            box-shadow: var(--inv-shadow-md);
+            width: 340px;
+            height: 240px;
+            background: #f5f0e8;
+            border-radius: 6px;
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.12),
+                0 1px 4px rgba(0, 0, 0, 0.08);
+            overflow: visible;
+
+            // Subtle paper texture
+            &::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border-radius: 6px;
+                background:
+                    repeating-linear-gradient(
+                        0deg,
+                        transparent,
+                        transparent 2px,
+                        rgba(0, 0, 0, 0.01) 2px,
+                        rgba(0, 0, 0, 0.01) 4px
+                    ),
+                    repeating-linear-gradient(
+                        90deg,
+                        transparent,
+                        transparent 3px,
+                        rgba(0, 0, 0, 0.008) 3px,
+                        rgba(0, 0, 0, 0.008) 6px
+                    );
+                pointer-events: none;
+                z-index: 1;
+            }
 
             .flap {
                 position: absolute;
                 top: 0;
                 z-index: 2;
-                border-top: 130px solid var(--inv-accent);
-                border-right: 150px solid transparent;
-                border-left: 150px solid transparent;
+                border-top: 130px solid #ede6da;
+                border-right: 170px solid transparent;
+                border-left: 170px solid transparent;
                 transform-origin: top;
-                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
                 backface-visibility: visible;
             }
 
@@ -42,46 +70,175 @@
                 width: 0px;
                 height: 0px;
                 border-top: 130px solid transparent;
-                border-right: 150px solid var(--inv-accent-hover);
-                border-bottom: 100px solid var(--inv-accent-hover);
-                border-left: 150px solid var(--inv-accent-hover);
-                border-bottom-left-radius: var(--inv-radius-lg);
-                border-bottom-right-radius: var(--inv-radius-lg);
+                border-right: 170px solid #e8e0d2;
+                border-bottom: 110px solid #e8e0d2;
+                border-left: 170px solid #e8e0d2;
+                border-bottom-left-radius: 6px;
+                border-bottom-right-radius: 6px;
             }
 
-            .heart {
+            // Twine
+            .twine {
                 position: absolute;
                 top: 50%;
-                left: 48%;
-                width: 18px;
-                height: 18px;
-                background: var(--inv-primary);
-                z-index: 4;
-                transform: translate(-50%, -20%) rotate(45deg);
-                box-shadow: var(--inv-shadow-sm);
-                cursor: pointer;
-                transition: transform 0.3s ease;
+                left: 0;
+                right: 0;
+                transform: translateY(-50%);
+                z-index: 5;
+                pointer-events: none;
 
-                &:hover {
-                    transform: translate(-50%, -20%) rotate(45deg) scale(1.1);
+                &__line {
+                    position: absolute;
+                    top: 50%;
+                    left: -8px;
+                    right: -8px;
+                    height: 2px;
+                    background: #b8a88a;
+                    transform: translateY(-50%);
+                    border-radius: 1px;
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        top: 3px;
+                        left: -8px;
+                        right: -8px;
+                        height: 1.5px;
+                        background: #c4b496;
+                        border-radius: 1px;
+                        opacity: 0.6;
+                    }
                 }
 
-                &:before,
-                &:after {
-                    content: "";
+                &__bow {
                     position: absolute;
-                    width: 18px;
-                    height: 18px;
-                    background-color: var(--inv-primary);
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 50px;
+                    height: 30px;
+                }
+
+                &__bow-loop {
+                    position: absolute;
+                    top: -4px;
+                    width: 22px;
+                    height: 14px;
+                    border: 1.5px solid #b8a88a;
+                    border-radius: 50%;
+                    background: transparent;
+
+                    &--left {
+                        left: -2px;
+                        transform: rotate(-25deg);
+                    }
+
+                    &--right {
+                        right: -2px;
+                        transform: rotate(25deg);
+                    }
+                }
+
+                &__bow-knot {
+                    position: absolute;
+                    top: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 6px;
+                    height: 6px;
+                    background: #b8a88a;
                     border-radius: 50%;
                 }
+            }
 
-                &:before {
-                    top: -9px;
+            // Seal halves — split the wax seal between flap and body
+            .seal-half {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+
+                &--top {
+                    z-index: 3;
+                    clip-path: inset(0 0 50% 0);
+                    backface-visibility: visible;
                 }
 
-                &:after {
-                    right: 9px;
+                &--bottom {
+                    z-index: 5;
+                    clip-path: inset(50% 0 0 0);
+                }
+            }
+
+            // Wax seal
+            .wax-seal {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 52px;
+                height: 52px;
+                background: radial-gradient(circle at 40% 35%, #4a3728, #2d1b10);
+                border-radius: 50%;
+                box-shadow:
+                    0 2px 8px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+                    inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                // Irregular wax edge
+                &::before {
+                    content: '';
+                    position: absolute;
+                    inset: -3px;
+                    background: radial-gradient(circle at 40% 35%, #4a3728, #2d1b10);
+                    border-radius: 48% 52% 50% 50% / 52% 48% 52% 48%;
+                    z-index: -1;
+                    opacity: 0.7;
+                }
+
+                &__heart {
+                    width: 22px;
+                    height: 22px;
+                }
+            }
+
+            // Decorative SVG elements
+            .envelope-deco {
+                position: absolute;
+                z-index: 7;
+                pointer-events: none;
+
+                &--top-left {
+                    top: -40px;
+                    left: -35px;
+                    width: 130px;
+                    height: 130px;
+                }
+
+                &--top-right {
+                    top: -22px;
+                    right: -18px;
+                    width: 75px;
+                    height: 75px;
+                }
+
+                &--bottom-left {
+                    bottom: 2px;
+                    left: 4px;
+                    width: 65px;
+                    height: 34px;
+                }
+
+                &--bottom-right {
+                    bottom: 2px;
+                    right: 4px;
+                    width: 50px;
+                    height: 42px;
                 }
             }
         }
