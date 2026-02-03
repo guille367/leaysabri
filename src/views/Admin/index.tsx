@@ -98,6 +98,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
 
     const addGuest = async () => {
         if (!newGuest.name.trim()) return
+        
 
         setSaving(true)
         try {
@@ -277,7 +278,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                         <thead>
                             <tr>
                                 <th>Invitado</th>
-                                <th>Cantidad</th>
+                                <th>Cantidad de acompañantes</th>
                                 <th>Acompañantes</th>
                                 <th>Restricciones</th>
                                 <th>Confirmado</th>
@@ -362,13 +363,13 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                             </div>
 
                             <div className="admin__modal-field">
-                                <label>Cantidad de invitados</label>
+                                <label>Cantidad de acompañantes</label>
                                 <select
                                     value={newGuest.guestsAmount}
                                     onChange={e => setNewGuest({ ...newGuest, guestsAmount: parseInt(e.target.value) })}
                                 >
-                                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
-                                        <option key={n} value={n}>{n}</option>
+                                    {[0, 1, 2, 3, 4, 5].map(n => (
+                                        <option key={n} value={n}>{n === 0 ? 'sin acompañantes' : n}</option>
                                     ))}
                                 </select>
                             </div>

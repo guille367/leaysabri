@@ -29,8 +29,8 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    const hasGuests = (guest?.guestsAmount || 1) > 1
-    const guestsCount = (guest?.guestsAmount || 1) - 1 // Exclude the main guest
+    const hasGuests = (guest?.guestsAmount || 0) > 0
+    const guestsCount = (guest?.guestsAmount || 0) 
 
     useEffect(() => {
         if (guest) {

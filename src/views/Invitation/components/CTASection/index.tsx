@@ -47,7 +47,7 @@ export default function CTASection({
    
 
     const personalizedDescription = guestName
-        ? guestsAmount > 1
+        ? guestsAmount > 0
             ? `${guestName}, nos encantaría que vos y tus invitados vengan. Para una mejor organización, es muy importante que nos ayudes confirmando su asistencia`
             : `${guestName}, nos encantaría que vengas. Para una mejor organización, es muy importante que nos ayudes confirmando tu asistencia.`
         : rsvpDescription
