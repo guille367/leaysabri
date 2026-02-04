@@ -98,7 +98,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
 
     const addGuest = async () => {
         if (!newGuest.name.trim()) return
-        
+
 
         setSaving(true)
         try {
@@ -253,7 +253,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
             <div className="admin__search">
                 <input
                     type="text"
-                    placeholder="Buscar por nombre o acompañantes..."
+                    placeholder="Buscar por nombre o invitado..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="admin__search-input"

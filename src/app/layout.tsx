@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import '@/styles/main.scss'
 
 export const metadata: Metadata = {
-    title: 'Lea & Sabri - Nos Casamos',
-    description: 'Invitación de casamiento de Lea y Sabri',
+    title: 'Lean & Sabri - Nos Casamos',
+    description: 'Invitación de casamiento de Lean y Sabri',
 }
 
 export default function RootLayout({

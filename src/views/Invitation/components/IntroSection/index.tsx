@@ -9,7 +9,7 @@ interface IntroSectionProps {
 
 export default function IntroSection({
     title = 'Nuestro Casamiento',
-    subtitle = 'Te dejamos toda la información de nuestro casamiento, para que nos acompañes en este gran día.',
+    subtitle = 'Te dejamos toda la información para que nos acompañes en este gran día.',
     className = ''
 }: IntroSectionProps) {
     return (

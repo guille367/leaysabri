@@ -32,7 +32,7 @@ interface InvitationProps {
 // CUSTOMIZABLE CONTENT - Edit these values
 // ============================================
 
-const COUPLE_NAMES = 'Lea & Sabri'
+const COUPLE_NAMES = 'Lean & Sabri'
 
 const HERO_CONTENT: {
     headline: string
@@ -68,7 +68,7 @@ const CTA = {
 
 const BANKING_DATA = {
     bankName: 'Banco Galicia',
-    accountHolder: 'Lea y Sabri',
+    accountHolder: 'Lean y Sabri',
     accountType: 'Caja de ahorro en pesos',
     cbu: '0070000000000000000000',
     alias: 'LEA.SABRI.BODA',
@@ -126,6 +126,8 @@ export default function Invitation({ guest, code, heroRef, containerRef }: Invit
 
             <EventsSection event={EVENT} />
 
+            <MapSection locationQuery="Av. Suárez 1698, Buenos Aires, Argentina" />
+
             <CTASection
                 guestName={guest?.name}
                 guestsAmount={guest?.guestsAmount}
@@ -140,7 +142,6 @@ export default function Invitation({ guest, code, heroRef, containerRef }: Invit
                 bankingData={BANKING_DATA}
             />
 
-            <MapSection locationQuery="Av. Suárez 1698, Buenos Aires, Argentina" />
 
             <TimelineCarousel title="Nuestra historia" photos={TIMELINE_PHOTOS} startYear={2013} endYear={2025} />
 

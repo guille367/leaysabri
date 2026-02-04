@@ -4,7 +4,7 @@ import './styles.scss'
 // CUSTOMIZABLE CONTENT - Edit these values
 // ============================================
 
-const COUPLE_NAMES = 'Lea & Sabeeeeri'
+const COUPLE_NAMES = 'Lean & Sabeeeeri'
 const WEDDING_DATE = '15 de Marzo, 2025'
 
 const HEADLINE = '¡Nos Casamos!'

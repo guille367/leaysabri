@@ -28,7 +28,7 @@ interface InvitationClientProps {
     code?: string
 }
 
-const COUPLE_NAMES = 'Lea & Sabri'
+const COUPLE_NAMES = 'Lean & Sabri'
 
 const HERO_CONTENT = {
     headline: '¡Nos Casamos!',
@@ -38,7 +38,7 @@ const HERO_CONTENT = {
 
 const EVENT = {
     type: 'ceremony' as const,
-    title: 'CEREMONIA & FIESTA',
+    title: 'Celebración',
     date: 'sábado 13 de septiembre 2025',
     time: '16:00 hs.',
     venue: 'Schoenstatt Los Olmos',
@@ -58,7 +58,7 @@ const CTA = {
 
 const BANKING_DATA = {
     bankName: 'Banco Galicia',
-    accountHolder: 'Lea y Sabri',
+    accountHolder: 'Lean y Sabri',
     accountType: 'Caja de ahorro en pesos',
     cbu: '0070000000000000000000',
     alias: 'LEA.SABRI.BODA',
@@ -66,7 +66,7 @@ const BANKING_DATA = {
 
 const FOOTER = {
     message: 'Gracias por ser parte de este día tan especial',
-    instagramUrl: 'https://instagram.com/leaysabri',
+    instagramUrl: 'https://instagram.com/leanysabri',
     whatsappNumber: '+5491112345678',
 }
 

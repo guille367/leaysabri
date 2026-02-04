@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import './styles.scss'
-import { ChurchIcon, PartyIcon } from '../Icons'
+import { CrystalBall, PartyIcon } from '../Icons'
 
 interface Event {
     title: string
@@ -32,7 +32,7 @@ export default function EventsSection({
                 <div className="inv-events__event">
                     <div className="inv-events__icons">
                         <div className="inv-events__event-icon">
-                            <ChurchIcon />
+                            <CrystalBall />
                         </div>
                         <div className="inv-events__event-icon">
                             <PartyIcon />

@@ -30,7 +30,7 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
     const [error, setError] = useState<string | null>(null)
 
     const hasGuests = (guest?.guestsAmount || 0) > 0
-    const guestsCount = (guest?.guestsAmount || 0) 
+    const guestsCount = (guest?.guestsAmount || 0)
 
     useEffect(() => {
         if (guest) {
@@ -162,7 +162,7 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
                                 {hasGuests ? (
                                     <form className="rsvp-modal__form" onSubmit={handleSubmit}>
                                         <p className="rsvp-modal__intro">
-                                            Por favor ingresá los nombres de tus acompañantes:
+                                            Por favor ingresá los nombres de tus invitados:
                                         </p>
 
                                         <div className="rsvp-modal__guests-list">
