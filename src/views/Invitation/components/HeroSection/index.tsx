@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import './styles.scss'
+import { RefObject } from 'react'
 
 interface HeroSectionProps {
     coupleNames: string
@@ -7,6 +8,7 @@ interface HeroSectionProps {
     subheadline: string
     backgroundImage?: string
     className?: string
+    ref: RefObject<HTMLDivElement>
 }
 
 export default function HeroSection({
@@ -14,10 +16,12 @@ export default function HeroSection({
     headline,
     subheadline,
     backgroundImage,
-    className = ''
+    className = '',
+    ref,
 }: HeroSectionProps) {
     return (
         <section
+            ref={ref}
             className={`inv-hero ${className}`}
             style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
         >

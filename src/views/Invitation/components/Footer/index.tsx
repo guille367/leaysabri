@@ -16,7 +16,7 @@ export default function Footer({
     message = 'Gracias por ser parte de este día tan especial',
     instagramUrl,
     whatsappNumber,
-    showScrollTop = true,
+    showScrollTop = false,
     className = ''
 }: FooterProps) {
     const scrollToTop = () => {

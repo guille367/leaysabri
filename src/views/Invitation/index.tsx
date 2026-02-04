@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { RefObject, useState } from 'react'
 import './styles/index.scss'
 import HeroSection from './components/HeroSection'
 import IntroSection from './components/IntroSection'
@@ -24,6 +24,7 @@ interface Guest {
 interface InvitationProps {
     guest?: Guest | null
     code?: string
+    ref: RefObject<HTMLDivElement>
 }
 
 // ============================================
@@ -43,15 +44,15 @@ const HERO_CONTENT: {
 }
 
 const EVENT =
-    {
-        type: 'ceremony' as const,
-        title: 'CEREMONIA & FIESTA',
-        date: 'sábado 13 de septiembre 2025',
-        time: '16:00 hs.',
-        venue: 'Schoenstatt Los Olmos',
-        address: 'Schoenstatt Los Olmos Pilar, Buenos Aires Province, Argentina',
-        locationUrl: 'https://maps.google.com/?q=Schoenstatt+Los+Olmos+Pilar',
-    }
+{
+    type: 'ceremony' as const,
+    title: 'CEREMONIA & FIESTA',
+    date: 'sábado 13 de septiembre 2025',
+    time: '16:00 hs.',
+    venue: 'Schoenstatt Los Olmos',
+    address: 'Schoenstatt Los Olmos Pilar, Buenos Aires Province, Argentina',
+    locationUrl: 'https://maps.google.com/?q=Schoenstatt+Los+Olmos+Pilar',
+}
 
 
 const CTA = {
@@ -100,7 +101,7 @@ const TIMELINE_PHOTOS = [
 // PAGE COMPONENT
 // ============================================
 
-export default function Invitation({ guest, code }: InvitationProps) {
+export default function Invitation({ guest, code, ref }: InvitationProps) {
     const [rsvpModalOpen, setRsvpModalOpen] = useState(false)
     const [isConfirmed, setIsConfirmed] = useState(guest?.confirmado || false)
 
@@ -112,6 +113,7 @@ export default function Invitation({ guest, code }: InvitationProps) {
     return (
         <main className="inv-page">
             <HeroSection
+                ref={ref}
                 coupleNames={COUPLE_NAMES}
                 headline={HERO_CONTENT.headline}
                 subheadline={personalizedSubheadline}

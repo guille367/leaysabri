@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { animate, motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
 import Invitation from '../../Invitation';
 import ScrollHint from '../../Invitation/components/ScrollHint';
 
@@ -32,11 +32,51 @@ function WaxSealContent() {
 
 export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
     const containerRef = useRef<HTMLDivElement>(null);
+    const letterRef = useRef<HTMLDivElement>(null);
+    const isScrolling = useRef<boolean>(false);
 
-    const { scrollYProgress } = useScroll({
+    const { scrollYProgress, scrollY } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
     });
+
+    function startAnimation() {
+        isScrolling.current = true;
+        document.body.style.overflow = 'hidden';
+    }
+
+    function openEnvelope() {
+        window.scrollTo({
+            top: window.scrollY + (window.innerHeight * 2),
+            behavior: 'smooth'
+        })
+    }
+
+    function closeEnvelope() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+
+    useEffect(() => {
+        function handleWheel(e: any) {
+            startAnimation();
+            const letterRefTop = letterRef?.current?.getBoundingClientRect()?.top || 10;
+
+            if (e.deltaY > 0) {
+                openEnvelope();
+            } else if (e.deltaY < 0 && letterRefTop >= -50) {
+                closeEnvelope()
+            }
+        }
+
+        window.addEventListener('wheel', handleWheel);
+
+        return () => {
+            window.removeEventListener('wheel', handleWheel)
+        }
+    }, [])
 
     // Flap animation: 0% to 40% of scroll
     const flapRotateX = useTransform(scrollYProgress, [0, 0.4], [0, 180]);
@@ -44,7 +84,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
     // Letter animation: starts behind pocket inside envelope, rises and scales to fill viewport
     // bottom: starts at 0 (inside envelope), rises up as scroll progresses
-    const letterBottom = useTransform(scrollYProgress, [0, .5, .7, .9, 1], [-300, -300, -100, -200, -252]);
+    const letterBottom = useTransform(scrollYProgress, [0, .5, .7, .9, 1], [-300, -300, -100, -200, -301]);
     // scale: starts tiny inside envelope, grows to fill viewport
     const letterScale = useTransform(scrollYProgress, [0.34, .44, .55, .66, .77, .88, 0.95], [0.15, .15, .15, .15, .25, .50, 1]);
     // const letterScale = useTransform(scrollYProgress, [0.3, 0.5, 0.7, 1], [0.15, 0.35, 0.65, 1]);
@@ -54,7 +94,8 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
     // Envelope fades out as letter takes over
     const envelopeOpacity = useTransform(scrollYProgress, [0.5, 0.7], [1, 1]);
 
-    const scrollBehaviour = useTransform(scrollYProgress, [0, .99, 100], ['hidden', 'hidden', 'auto'])
+    // const scrollBehaviour = useTransform(scrollYProgress, [0, .999999, 100], ['hidden', 'hidden', 'auto'])
+
 
     return (
         <>
@@ -79,21 +120,20 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
                                 bottom: letterBottom,
                                 scale: letterScale,
                                 zIndex: letterZIndex,
-                                overflow: scrollBehaviour,
                             }}
+
                         >
-                            <Invitation guest={guest} code={code} />
+                            <Invitation ref={letterRef} guest={guest} code={code} />
                         </motion.div>
 
-                        {/* Twine */}
-                        <div className="twine">
+                        {/* <div className="twine">
                             <div className="twine__line" />
                             <div className="twine__bow">
                                 <div className="twine__bow-loop twine__bow-loop--left" />
                                 <div className="twine__bow-loop twine__bow-loop--right" />
                                 <div className="twine__bow-knot" />
                             </div>
-                        </div>
+                        </div> */}
 
                         {/* Wax seal — top half rotates with flap */}
                         <motion.div

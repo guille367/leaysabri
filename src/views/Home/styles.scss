@@ -222,6 +222,7 @@
                 overflow-x: hidden;
                 // Start behind pocket (z-index 2), Framer Motion will raise it
                 z-index: 1;
+                overflow-x: hidden;
 
                 &::-webkit-scrollbar {
                     display: none;
