@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import './styles.scss'
 import { getGuests } from '@/lib/dynamodb'
+import { STATIC_STATUS_PAGE_GET_INITIAL_PROPS_ERROR } from 'next/dist/lib/constants'
 
 const ADMIN_PASSWORD = 'LEASABRIW'
 
@@ -49,6 +50,14 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
         code: '',
     })
     const [guests, setGuests] = useState(initialGuests);
+
+    const confirmedGuests = guests.reduce((acc, curr, index) => {
+        if (!curr.confirmado) {
+            return acc;
+        }
+
+        return acc + 1 + curr.guests.filter(g => g !== '').length;
+    }, 0)
 
     // Check for existing session on mount
     useEffect(() => {
@@ -147,14 +156,14 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
         navigator.clipboard.writeText(text)
     }
 
-    const confirmedGuests = guests.filter(g => g.confirmado)
+    // const confirmedGuests = guests.filter(g => g.confirmado)
     const pendingGuests = guests.filter(g => !g.confirmado)
 
     const stats = {
         total: guests.length,
-        confirmed: confirmedGuests.length,
+        confirmed: confirmedGuests,
         pending: pendingGuests.length,
-        totalPeople: guests.reduce((acc, g) => acc + g.guestsAmount, 0),
+        totalPeople: guests.reduce((acc, g) => acc + 1 + g.guestsAmount, 0),
     }
 
     const getInvitationLink = (code: string) => `${baseUrl}?code=${code}`
@@ -235,21 +244,21 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                     onClick={() => handleStatClick('confirmed')}
                 >
                     <span className="admin__stat-value">{stats.confirmed}</span>
-                    <span className="admin__stat-label">Confirmados</span>
+                    <span className="admin__stat-label">Invitados confirmados + acompañantes</span>
                 </div>
                 <div
                     className={`admin__stat admin__stat--pending ${statFilter === 'pending' ? 'admin__stat--active' : ''}`}
                     onClick={() => handleStatClick('pending')}
                 >
                     <span className="admin__stat-value">{stats.pending}</span>
-                    <span className="admin__stat-label">Pendientes</span>
+                    <span className="admin__stat-label">Invitaciones pendientes de confirmación</span>
                 </div>
                 <div
                     className={`admin__stat admin__stat--guests ${statFilter === 'guests' ? 'admin__stat--active' : ''}`}
                     onClick={() => handleStatClick('guests')}
                 >
                     <span className="admin__stat-value">{stats.totalPeople}</span>
-                    <span className="admin__stat-label">Total personas</span>
+                    <span className="admin__stat-label">Total personas invitadas</span>
                 </div>
             </div>
 
