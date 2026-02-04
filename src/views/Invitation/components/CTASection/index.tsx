@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import './styles.scss'
 import Button from '../Button'
@@ -134,93 +135,96 @@ export default function CTASection({
                 )}
             </motion.div>
 
-            {/* Banking Modal */}
-            <AnimatePresence>
-                {modalOpen && bankingData && (
-                    <motion.div
-                        className="inv-cta__modal"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        onClick={closeModal}
-                    >
+            {/* Banking Modal — portaled to body to escape transform context */}
+            {typeof document !== 'undefined' && createPortal(
+                <AnimatePresence>
+                    {modalOpen && bankingData && (
                         <motion.div
-                            className="inv-cta__modal-content"
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="inv-cta__modal"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             transition={{ duration: 0.3 }}
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={closeModal}
                         >
-                            <button
-                                className="inv-cta__modal-close"
-                                onClick={closeModal}
-                                aria-label="Cerrar"
+                            <motion.div
+                                className="inv-cta__modal-content"
+                                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                                transition={{ duration: 0.3 }}
+                                onClick={(e) => e.stopPropagation()}
                             >
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M18 6L6 18M6 6l12 12" />
-                                </svg>
-                            </button>
+                                <button
+                                    className="inv-cta__modal-close"
+                                    onClick={closeModal}
+                                    aria-label="Cerrar"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M18 6L6 18M6 6l12 12" />
+                                    </svg>
+                                </button>
 
-                            <h3 className="inv-cta__modal-title">Datos bancarios</h3>
+                                <h3 className="inv-cta__modal-title">Datos bancarios</h3>
 
-                            <div className="inv-cta__modal-data">
-                                <div className="inv-cta__modal-row">
-                                    <span className="inv-cta__modal-label">Banco</span>
-                                    <span className="inv-cta__modal-value">{bankingData.bankName}</span>
-                                </div>
+                                <div className="inv-cta__modal-data">
+                                    <div className="inv-cta__modal-row">
+                                        <span className="inv-cta__modal-label">Banco</span>
+                                        <span className="inv-cta__modal-value">{bankingData.bankName}</span>
+                                    </div>
 
-                                <div className="inv-cta__modal-row">
-                                    <span className="inv-cta__modal-label">Titular</span>
-                                    <span className="inv-cta__modal-value">{bankingData.accountHolder}</span>
-                                </div>
+                                    <div className="inv-cta__modal-row">
+                                        <span className="inv-cta__modal-label">Titular</span>
+                                        <span className="inv-cta__modal-value">{bankingData.accountHolder}</span>
+                                    </div>
 
-                                <div className="inv-cta__modal-row">
-                                    <span className="inv-cta__modal-label">Tipo de cuenta</span>
-                                    <span className="inv-cta__modal-value">{bankingData.accountType}</span>
-                                </div>
+                                    <div className="inv-cta__modal-row">
+                                        <span className="inv-cta__modal-label">Tipo de cuenta</span>
+                                        <span className="inv-cta__modal-value">{bankingData.accountType}</span>
+                                    </div>
 
-                                <div className="inv-cta__modal-row inv-cta__modal-row--copyable">
-                                    <span className="inv-cta__modal-label">CBU</span>
-                                    <div className="inv-cta__modal-value-group">
-                                        <span className="inv-cta__modal-value">{bankingData.cbu}</span>
-                                        <button
-                                            className="inv-cta__modal-copy"
-                                            onClick={() => copyToClipboard(bankingData.cbu)}
-                                            aria-label="Copiar CBU"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                                            </svg>
-                                        </button>
+                                    <div className="inv-cta__modal-row inv-cta__modal-row--copyable">
+                                        <span className="inv-cta__modal-label">CBU</span>
+                                        <div className="inv-cta__modal-value-group">
+                                            <span className="inv-cta__modal-value">{bankingData.cbu}</span>
+                                            <button
+                                                className="inv-cta__modal-copy"
+                                                onClick={() => copyToClipboard(bankingData.cbu)}
+                                                aria-label="Copiar CBU"
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="inv-cta__modal-row inv-cta__modal-row--copyable">
+                                        <span className="inv-cta__modal-label">Alias</span>
+                                        <div className="inv-cta__modal-value-group">
+                                            <span className="inv-cta__modal-value">{bankingData.alias}</span>
+                                            <button
+                                                className="inv-cta__modal-copy"
+                                                onClick={() => copyToClipboard(bankingData.alias)}
+                                                aria-label="Copiar Alias"
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="inv-cta__modal-row inv-cta__modal-row--copyable">
-                                    <span className="inv-cta__modal-label">Alias</span>
-                                    <div className="inv-cta__modal-value-group">
-                                        <span className="inv-cta__modal-value">{bankingData.alias}</span>
-                                        <button
-                                            className="inv-cta__modal-copy"
-                                            onClick={() => copyToClipboard(bankingData.alias)}
-                                            aria-label="Copiar Alias"
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <p className="inv-cta__modal-thanks">¡Muchas gracias!</p>
+                                <p className="inv-cta__modal-thanks">¡Muchas gracias!</p>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
         </section>
     )
 }

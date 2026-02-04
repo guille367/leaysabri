@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import './styles.scss'
 
@@ -212,81 +213,84 @@ export default function TimelineCarousel({
                 ))}
             </div>
 
-            {/* Fullscreen Modal */}
-            <AnimatePresence>
-                {modalOpen && allPhotosSorted.length > 0 && currentModalPhoto && (
-                    <motion.div
-                        className="inv-carousel__modal"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        onClick={closeModal}
-                    >
-                        <button
-                            className="inv-carousel__modal-close"
-                            onClick={closeModal}
-                            aria-label="Cerrar"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M18 6L6 18M6 6l12 12" />
-                            </svg>
-                        </button>
-
+            {/* Fullscreen Modal — portaled to body to escape transform context */}
+            {typeof document !== 'undefined' && createPortal(
+                <AnimatePresence>
+                    {modalOpen && allPhotosSorted.length > 0 && currentModalPhoto && (
                         <motion.div
-                            className="inv-carousel__modal-year"
-                            key={currentModalPhoto.year}
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.2 }}
+                            className="inv-carousel__modal"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            onClick={closeModal}
                         >
-                            {currentModalPhoto.year}
-                        </motion.div>
+                            <button
+                                className="inv-carousel__modal-close"
+                                onClick={closeModal}
+                                aria-label="Cerrar"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M18 6L6 18M6 6l12 12" />
+                                </svg>
+                            </button>
 
-                        <button
-                            className="inv-carousel__modal-nav inv-carousel__modal-nav--prev"
-                            onClick={(e) => { e.stopPropagation(); goToPreviousPhoto(); }}
-                            aria-label="Foto anterior"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M15 18l-6-6 6-6" />
-                            </svg>
-                        </button>
-
-                        <AnimatePresence mode="wait">
                             <motion.div
-                                className="inv-carousel__modal-content"
-                                onClick={(e) => e.stopPropagation()}
-                                key={modalPhotoIndex}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="inv-carousel__modal-year"
+                                key={currentModalPhoto.year}
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.2 }}
                             >
-                                <img
-                                    src={currentModalPhoto.src}
-                                    alt={currentModalPhoto.alt || `Foto ${modalPhotoIndex + 1}`}
-                                    className="inv-carousel__modal-image"
-                                />
+                                {currentModalPhoto.year}
                             </motion.div>
-                        </AnimatePresence>
 
-                        <button
-                            className="inv-carousel__modal-nav inv-carousel__modal-nav--next"
-                            onClick={(e) => { e.stopPropagation(); goToNextPhoto(); }}
-                            aria-label="Foto siguiente"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M9 18l6-6-6-6" />
-                            </svg>
-                        </button>
+                            <button
+                                className="inv-carousel__modal-nav inv-carousel__modal-nav--prev"
+                                onClick={(e) => { e.stopPropagation(); goToPreviousPhoto(); }}
+                                aria-label="Foto anterior"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M15 18l-6-6 6-6" />
+                                </svg>
+                            </button>
 
-                        <div className="inv-carousel__modal-counter">
-                            {modalPhotoIndex + 1} / {allPhotosSorted.length}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    className="inv-carousel__modal-content"
+                                    onClick={(e) => e.stopPropagation()}
+                                    key={modalPhotoIndex}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <img
+                                        src={currentModalPhoto.src}
+                                        alt={currentModalPhoto.alt || `Foto ${modalPhotoIndex + 1}`}
+                                        className="inv-carousel__modal-image"
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
+
+                            <button
+                                className="inv-carousel__modal-nav inv-carousel__modal-nav--next"
+                                onClick={(e) => { e.stopPropagation(); goToNextPhoto(); }}
+                                aria-label="Foto siguiente"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M9 18l6-6-6-6" />
+                                </svg>
+                            </button>
+
+                            <div className="inv-carousel__modal-counter">
+                                {modalPhotoIndex + 1} / {allPhotosSorted.length}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
         </section>
     )
 }

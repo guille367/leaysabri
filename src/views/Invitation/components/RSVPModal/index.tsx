@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import './styles.scss'
 
@@ -107,7 +108,9 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
         onClose()
     }
 
-    return (
+    if (typeof document === 'undefined') return null
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <motion.div
@@ -236,6 +239,7 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
                     </motion.div>
                 </motion.div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     )
 }
