@@ -25,7 +25,7 @@ interface RSVPModalProps {
 
 export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }: RSVPModalProps) {
     const [guestNames, setGuestNames] = useState<string[]>([])
-    const [dietaryRestrictions, setDietaryRestrictions] = useState('')
+    const [dietaryRestrictions, setDietaryRestrictions] = useState('Ninguna')
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -40,7 +40,6 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
                 ? [...guest.guests]
                 : Array(guestsCount).fill('')
             setGuestNames(initialGuests)
-            setDietaryRestrictions(guest.dietaryRestrictions || '')
         }
     }, [guest, guestsCount])
 
@@ -182,7 +181,7 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
                                         </div>
 
                                         <div className="rsvp-modal__field">
-                                            <label htmlFor="dietaryRestrictions">Restricciones alimentarias</label>
+                                            <label htmlFor="dietaryRestrictions">Restricciones alimentarias {guest?.guestsAmount || 0 > 0 ? '(indicá la de tus invitados también)' : ''}</label>
                                             <input
                                                 type="text"
                                                 id="dietaryRestrictions"

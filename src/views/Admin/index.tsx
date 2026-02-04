@@ -45,6 +45,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
     const [newGuest, setNewGuest] = useState({
         name: '',
         guestsAmount: 0,
+        guests: [] as string[],
         code: '',
     })
     const [guests, setGuests] = useState(initialGuests);
@@ -108,7 +109,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                 body: JSON.stringify({
                     name: newGuest.name,
                     guestsAmount: newGuest.guestsAmount,
-                    guests: [],
+                    guests: newGuest.guests.slice(0, newGuest.guestsAmount),
                     dietaryRestrictions: '',
                     code: newGuest.code,
                 }),
@@ -121,6 +122,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                 setNewGuest({
                     name: '',
                     guestsAmount: 0,
+                    guests: [],
                     code: generateCode(),
                 })
             }
@@ -135,6 +137,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
         setNewGuest({
             name: '',
             guestsAmount: 0,
+            guests: [],
             code: generateCode(),
         })
         setModalOpen(true)
@@ -366,13 +369,39 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                                 <label>Cantidad de acompañantes</label>
                                 <select
                                     value={newGuest.guestsAmount}
-                                    onChange={e => setNewGuest({ ...newGuest, guestsAmount: parseInt(e.target.value) })}
+                                    onChange={e => {
+                                        const amount = parseInt(e.target.value)
+                                        const currentGuests = [...newGuest.guests]
+                                        // Resize array: keep existing names, pad with empty strings
+                                        while (currentGuests.length < amount) currentGuests.push('')
+                                        setNewGuest({ ...newGuest, guestsAmount: amount, guests: currentGuests.slice(0, amount) })
+                                    }}
                                 >
                                     {[0, 1, 2, 3, 4, 5].map(n => (
                                         <option key={n} value={n}>{n === 0 ? 'sin acompañantes' : n}</option>
                                     ))}
                                 </select>
                             </div>
+
+                            {newGuest.guestsAmount > 0 && (
+                                <div className="admin__modal-field">
+                                    <label>Nombres de acompañantes</label>
+                                    {Array.from({ length: newGuest.guestsAmount }).map((_, i) => (
+                                        <input
+                                            key={i}
+                                            type="text"
+                                            value={newGuest.guests[i] || ''}
+                                            onChange={e => {
+                                                const updated = [...newGuest.guests]
+                                                updated[i] = e.target.value
+                                                setNewGuest({ ...newGuest, guests: updated })
+                                            }}
+                                            placeholder={`Acompañante ${i + 1}`}
+                                            style={{ marginTop: i > 0 ? '0.5rem' : 0 }}
+                                        />
+                                    ))}
+                                </div>
+                            )}
 
                             <div className="admin__modal-field">
                                 <label>Código</label>
