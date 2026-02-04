@@ -24,7 +24,8 @@ interface Guest {
 interface InvitationProps {
     guest?: Guest | null
     code?: string
-    ref: RefObject<HTMLDivElement>
+    heroRef: RefObject<HTMLDivElement>
+    containerRef: RefObject<HTMLDivElement>
 }
 
 // ============================================
@@ -101,7 +102,7 @@ const TIMELINE_PHOTOS = [
 // PAGE COMPONENT
 // ============================================
 
-export default function Invitation({ guest, code, ref }: InvitationProps) {
+export default function Invitation({ guest, code, heroRef, containerRef }: InvitationProps) {
     const [rsvpModalOpen, setRsvpModalOpen] = useState(false)
     const [isConfirmed, setIsConfirmed] = useState(guest?.confirmado || false)
 
@@ -113,7 +114,8 @@ export default function Invitation({ guest, code, ref }: InvitationProps) {
     return (
         <main className="inv-page">
             <HeroSection
-                ref={ref}
+                heroRef={heroRef}
+                containerRef={containerRef}
                 coupleNames={COUPLE_NAMES}
                 headline={HERO_CONTENT.headline}
                 subheadline={personalizedSubheadline}

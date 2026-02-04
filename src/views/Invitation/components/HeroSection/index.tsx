@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion'
+import { motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import './styles.scss'
-import { RefObject } from 'react'
+import { RefObject, useState } from 'react'
 
 interface HeroSectionProps {
     coupleNames: string
@@ -8,7 +8,8 @@ interface HeroSectionProps {
     subheadline: string
     backgroundImage?: string
     className?: string
-    ref: RefObject<HTMLDivElement>
+    heroRef: RefObject<HTMLDivElement>
+    containerRef: RefObject<HTMLDivElement>
 }
 
 export default function HeroSection({
@@ -17,26 +18,35 @@ export default function HeroSection({
     subheadline,
     backgroundImage,
     className = '',
-    ref,
+    heroRef,
+    containerRef,
 }: HeroSectionProps) {
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end end"]
+    });
+
+    const [hasRevealed, setHasRevealed] = useState(false);
+
+    useMotionValueEvent(scrollYProgress, "change", (value) => {
+        if (value >= 0.99 && !hasRevealed) {
+            setHasRevealed(true);
+        }
+    });
+
     return (
         <section
-            ref={ref}
+            ref={heroRef}
             className={`inv-hero ${className}`}
             style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
         >
             <div className="inv-hero__overlay" />
 
-            <motion.div
-                className="inv-hero__content"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-            >
+            <div className="inv-hero__content">
                 <motion.p
                     className="inv-hero__names"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    animate={hasRevealed ? { opacity: 1 } : { opacity: 0 }}
                     transition={{ delay: 0.3, duration: 0.6 }}
                 >
                     {coupleNames}
@@ -45,7 +55,7 @@ export default function HeroSection({
                 <motion.h1
                     className="inv-hero__headline"
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    animate={hasRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                     transition={{ delay: 0.5, duration: 0.6 }}
                 >
                     {headline}
@@ -54,12 +64,12 @@ export default function HeroSection({
                 <motion.p
                     className="inv-hero__subheadline"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    animate={hasRevealed ? { opacity: 1 } : { opacity: 0 }}
                     transition={{ delay: 0.7, duration: 0.6 }}
                 >
                     {subheadline}
                 </motion.p>
-            </motion.div>
+            </div>
 
         </section>
     )

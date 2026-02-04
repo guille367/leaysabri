@@ -57,17 +57,19 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
     }
 
     function openEnvelope() {
-        window.scrollTo({
-            top: window.scrollY + (window.innerHeight * 2),
-            behavior: 'smooth'
-        })
+        animate(window.scrollY, window.scrollY + (window.innerHeight * 2), {
+            duration: 2.5,
+            ease: [0.22, 1, 0.36, 1],
+            onUpdate: (v) => window.scrollTo(0, v),
+        });
     }
 
     function closeEnvelope() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        })
+        animate(window.scrollY, 0, {
+            duration: 2,
+            ease: [0.76, 0, 0.24, 1],
+            onUpdate: (v) => window.scrollTo(0, v),
+        });
     }
 
     useEffect(() => {
@@ -134,7 +136,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
                             }}
 
                         >
-                            <Invitation ref={letterRef} guest={guest} code={code} />
+                            <Invitation heroRef={letterRef} containerRef={containerRef} guest={guest} code={code} />
                         </motion.div>
 
                         {/* <div className="twine">
