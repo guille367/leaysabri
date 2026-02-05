@@ -76,10 +76,11 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
         function handleWheel(e: any) {
             startAnimation();
             const letterRefTop = letterRef?.current?.getBoundingClientRect()?.top || 10;
+            // console.log(e.deltaY, letterRefTop)
 
             if (e.deltaY > 0) {
                 openEnvelope();
-            } else if (e.deltaY < 0 && letterRefTop >= -50) {
+            } else if (e.deltaY < 0 && letterRefTop >= -20) {
                 closeEnvelope()
             }
         }
@@ -97,7 +98,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
     // Letter animation: starts behind pocket inside envelope, rises and scales to fill viewport
     // bottom: starts at 0 (inside envelope), rises up as scroll progresses
-    const letterBottom = useTransform(scrollYProgress, [0, .5, .7, .9, 1], [-300, -300, -100, -200, finalBottom]);
+    const letterBottom = useTransform(scrollYProgress, [0, .5, .7, .9, 1], [-264, -200, -100, -200, finalBottom]);
     // scale: starts tiny inside envelope, grows to fill viewport
     const letterScale = useTransform(scrollYProgress, [0.34, .44, .55, .66, .77, .88, 0.95], [0.15, .15, .15, .15, .25, .50, 1]);
     // const letterScale = useTransform(scrollYProgress, [0.3, 0.5, 0.7, 1], [0.15, 0.35, 0.65, 1]);
