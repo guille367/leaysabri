@@ -24,6 +24,7 @@ interface RSVPModalProps {
 }
 
 export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }: RSVPModalProps) {
+    const [guestName, setGuestName] = useState('')
     const [guestNames, setGuestNames] = useState<string[]>([])
     const [dietaryRestrictions, setDietaryRestrictions] = useState('Ninguna')
     const [loading, setLoading] = useState(false)
@@ -35,6 +36,7 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
 
     useEffect(() => {
         if (guest) {
+            setGuestName(guest.name || '')
             // Initialize guest names array based on guestsAmount
             const initialGuests = guest.guests?.length
                 ? [...guest.guests]
@@ -69,21 +71,25 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!guest?.id) return
+
+        const isNewGuest = !guest?.code
+        const generatedCode = guest?.code || Math.random().toString(36).substring(2, 8).toUpperCase()
 
         setLoading(true)
         setError(null)
 
         try {
             const response = await fetch('/api/guests', {
-                method: 'PUT',
+                method: isNewGuest ? 'POST' : 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id: guest.id,
+                    ...(isNewGuest ? {} : { id: guest.id }),
+                    name: guestName,
                     guests: guestNames,
+                    guestsAmount: guestNames.length,
                     dietaryRestrictions,
                     confirmado: true,
-                    code: guest.code,
+                    code: generatedCode,
                 }),
             })
 
@@ -155,14 +161,22 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
                         ) : (
                             <>
                                 <h2 className="rsvp-modal__title">
-                                    {hasGuests
-                                        ? `${guest?.name}, confirmá tu asistencia`
-                                        : `¡Hola ${guest?.name}!`
-                                    }
+                                    Confirmá tu asistencia
                                 </h2>
 
                                 {hasGuests ? (
                                     <form className="rsvp-modal__form" onSubmit={handleSubmit}>
+                                        <div className="rsvp-modal__field">
+                                            <label htmlFor="guestName">Nombre</label>
+                                            <input
+                                                type="text"
+                                                id="guestName"
+                                                value={guestName}
+                                                onChange={(e) => setGuestName(e.target.value)}
+                                                placeholder="Ingresá tu nombre"
+                                            />
+                                        </div>
+
                                         <p className="rsvp-modal__intro">
                                             Por favor ingresá los nombres de tus invitados:
                                         </p>
@@ -208,6 +222,17 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
                                         <p className="rsvp-modal__greeting">
                                             ¡Qué alegría que puedas venir! Estamos muy emocionados de compartir este día tan especial con vos.
                                         </p>
+
+                                        <div className="rsvp-modal__field">
+                                            <label htmlFor="guestNameSolo">Tu nombre</label>
+                                            <input
+                                                type="text"
+                                                id="guestNameSolo"
+                                                value={guestName}
+                                                onChange={(e) => setGuestName(e.target.value)}
+                                                placeholder="Tu nombre"
+                                            />
+                                        </div>
 
                                         <div className="rsvp-modal__field">
                                             <label htmlFor="dietaryRestrictions">¿Tenés alguna restricción alimentaria?</label>

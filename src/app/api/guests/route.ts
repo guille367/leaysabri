@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         const guest = await addGuest({
             name: body.name,
             guests: body.guests || [],
-            guestsAmount: body.guestsAmount,
+            guestsAmount: body.guestsAmount || 0,
             dietaryRestrictions: body.dietaryRestrictions || '',
             code: body.code || '',
             confirmado: body.confirmado ?? false,
