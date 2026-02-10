@@ -56,7 +56,10 @@
                 border-right: 170px solid transparent;
                 border-left: 170px solid transparent;
                 transform-origin: top;
-                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+                filter:
+                    drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15))
+                    drop-shadow(0 8px 12px rgba(0, 0, 0, 0.1))
+                    drop-shadow(0 2px 3px rgba(0, 0, 0, 0.12));
                 backface-visibility: visible;
             }
 
