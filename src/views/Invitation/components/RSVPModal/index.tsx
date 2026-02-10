@@ -30,9 +30,22 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [nameError, setNameError] = useState<string | null>(null)
 
     const hasGuests = (guest?.guestsAmount || 0) > 0
     const guestsCount = (guest?.guestsAmount || 0)
+
+    // Validate name: only letters, spaces, accents, hyphens, apostrophes
+    const validateName = (name: string): boolean => {
+        if (!name.trim()) return true // Empty is valid (optional)
+        const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s\-']+$/
+        return nameRegex.test(name.trim())
+    }
+
+    const sanitizeName = (name: string): string => {
+        // Remove extra whitespace and trim
+        return name.replace(/\s+/g, ' ').trim()
+    }
 
     useEffect(() => {
         if (guest) {
@@ -65,7 +78,27 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
 
     const handleGuestNameChange = (index: number, value: string) => {
         const newGuests = [...guestNames]
-        newGuests[index] = value
+        // Only allow valid name characters
+        if (value === '' || validateName(value)) {
+            newGuests[index] = value
+            setGuestNames(newGuests)
+            setNameError(null)
+        } else {
+            setNameError('Solo se permiten letras y espacios')
+        }
+    }
+
+    const handleMainNameChange = (value: string) => {
+        if (value === '' || validateName(value)) {
+            setGuestName(value)
+            setNameError(null)
+        } else {
+            setNameError('Solo se permiten letras y espacios')
+        }
+    }
+
+    const removeGuest = (index: number) => {
+        const newGuests = guestNames.filter((_, i) => i !== index)
         setGuestNames(newGuests)
     }
 
@@ -79,14 +112,20 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
         setError(null)
 
         try {
+            // Sanitize names and filter out empty ones
+            const sanitizedMainName = sanitizeName(guestName)
+            const sanitizedGuests = guestNames
+                .map(sanitizeName)
+                .filter(name => name.length > 0)
+
             const response = await fetch('/api/guests', {
                 method: isNewGuest ? 'POST' : 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...(isNewGuest ? {} : { id: guest.id }),
-                    name: guestName,
-                    guests: guestNames,
-                    guestsAmount: guestNames.length,
+                    name: sanitizedMainName,
+                    guests: sanitizedGuests,
+                    guestsAmount: sanitizedGuests.length,
                     dietaryRestrictions,
                     confirmado: true,
                     code: generatedCode,
@@ -172,24 +211,41 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
                                                 type="text"
                                                 id="guestName"
                                                 value={guestName}
-                                                onChange={(e) => setGuestName(e.target.value)}
+                                                onChange={(e) => handleMainNameChange(e.target.value)}
                                                 placeholder="Ingresá tu nombre"
                                             />
                                         </div>
 
-                                        <p className="rsvp-modal__intro">
-                                            Por favor ingresá los nombres de tus invitados:
+                                        <p className="rsvp-modal__intro intro--text">
+                                            Confirmá el nombre de tus invitados.
+                                        </p>
+                                        <p className='rsvp-modal__intro intro--hint'>
+                                            Si no vienen, eliminalos o dejalos en blanco
                                         </p>
 
+                                        {nameError && (
+                                            <div className="rsvp-modal__error">{nameError}</div>
+                                        )}
+
                                         <div className="rsvp-modal__guests-list">
-                                            {Array.from({ length: guestsCount }).map((_, index) => (
-                                                <div key={index} className="rsvp-modal__field">
+                                            {guestNames.map((name, index) => (
+                                                <div key={index} className="rsvp-modal__field rsvp-modal__field--with-remove">
                                                     <input
                                                         type="text"
-                                                        value={guestNames[index] || ''}
+                                                        value={name}
                                                         onChange={(e) => handleGuestNameChange(index, e.target.value)}
                                                         placeholder={`Acompañante ${index + 1}`}
                                                     />
+                                                    <button
+                                                        type="button"
+                                                        className="rsvp-modal__remove-guest"
+                                                        onClick={() => removeGuest(index)}
+                                                        aria-label="Eliminar invitado"
+                                                    >
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                            <path d="M18 6L6 18M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
                                                 </div>
                                             ))}
                                         </div>
@@ -229,10 +285,14 @@ export default function RSVPModal({ isOpen, onClose, guest, code, onConfirmed }:
                                                 type="text"
                                                 id="guestNameSolo"
                                                 value={guestName}
-                                                onChange={(e) => setGuestName(e.target.value)}
+                                                onChange={(e) => handleMainNameChange(e.target.value)}
                                                 placeholder="Tu nombre"
                                             />
                                         </div>
+
+                                        {nameError && (
+                                            <div className="rsvp-modal__error">{nameError}</div>
+                                        )}
 
                                         <div className="rsvp-modal__field">
                                             <label htmlFor="dietaryRestrictions">¿Tenés alguna restricción alimentaria?</label>

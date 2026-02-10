@@ -57,6 +57,10 @@ export default function EventsSection({
                         ) : (
                             <p className="inv-events__event-address">{event.address}</p>
                         )}
+                        <p className="inv-events__event-venue dresscode">Dresscode</p>
+
+                        <p className="inv-events__event-address">Elegante</p>
+
                     </div>
                 </div>
             </motion.div>

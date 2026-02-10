@@ -34,7 +34,7 @@
         flex-direction: column;
 
         @include mobile {
-         flex-direction: row;
+            flex-direction: row;
         }
     }
 
@@ -82,6 +82,10 @@
         font-weight: 500;
         color: var(--inv-text-primary);
         margin: 0 0 var(--inv-space-xs) 0;
+
+        &.dresscode {
+            margin-top: 16px
+        }
     }
 
     &__event-address {
@@ -95,5 +99,7 @@
         &:hover {
             color: var(--inv-accent);
         }
+
+
     }
 }
