@@ -32,12 +32,12 @@ export async function getGuests(): Promise<Guest[]> {
         const command = new ScanCommand({
             TableName: TABLE_NAME,
         })
-console.log('Fetching guests from ' + TABLE_NAME)
+        console.log('Fetching guests from ' + TABLE_NAME)
         const response = await docClient.send(command)
         console.log(`Fetching guests ok!: ${response.Count}`)
         return (response.Items as Guest[]) || []
     }
-    catch(err) {
+    catch (err) {
         console.log('failed fetching guests: ' + err)
         return [];
     }
@@ -79,7 +79,7 @@ export async function updateGuest(
         ':updatedAt': now,
     }
 
-    const allowedFields = [ 'guests',  'dietaryRestrictions', 'confirmado']
+    const allowedFields = ['guests', 'dietaryRestrictions', 'confirmado', 'guestsAmount']
 
     for (const field of allowedFields) {
         if (field in updates) {
@@ -101,7 +101,7 @@ export async function updateGuest(
     try {
         const response = await docClient.send(command)
         return response.Attributes as Guest
-    } catch(error) {
+    } catch (error) {
         console.log(error)
         return null
     }
@@ -116,7 +116,7 @@ export async function deleteGuest(id: string, code: string): Promise<boolean> {
     try {
         await docClient.send(command)
         return true
-    } catch(error) {
+    } catch (error) {
         console.error('Delete error:', error)
         throw error
     }
@@ -141,7 +141,7 @@ export async function getGuestByCode(code: string): Promise<Guest | null> {
             return response.Items[0] as Guest
         }
         return null
-    } catch(error) {
+    } catch (error) {
         console.log(error)
         return null
     }

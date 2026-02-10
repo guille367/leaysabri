@@ -119,6 +119,24 @@
         text-align: center;
     }
 
+    &__modal-section {
+        margin-top: var(--inv-space-lg);
+
+        &:not(:last-child) {
+            margin-bottom: var(--inv-space-xl);
+            padding-bottom: var(--inv-space-xl);
+            border-bottom: 2px solid var(--inv-border);
+        }
+    }
+
+    &__modal-subtitle {
+        font-family: var(--inv-font-accent);
+        font-size: 1.25rem;
+        font-weight: 400;
+        color: var(--inv-text-primary);
+        margin: 0 0 var(--inv-space-md) 0;
+    }
+
     &__modal-data {
         display: flex;
         flex-direction: column;

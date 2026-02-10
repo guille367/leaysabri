@@ -8,7 +8,7 @@ interface MapSectionProps {
 }
 
 export default function MapSection({
-    locationQuery = 'Av. Suárez 1698, Buenos Aires, Argentina',
+    locationQuery = 'Janos Hudson',
     className = ''
 }: MapSectionProps) {
     const embedUrl = `https://www.google.com/maps?q=${encodeURIComponent(locationQuery)}&output=embed`

@@ -41,18 +41,18 @@ const HERO_CONTENT: {
 } = {
     headline: '¡Nos Casamos!',
     subheadline: 'Y queremos compartir este día tan especial con vos',
-    backgroundImage: 'retrait.png',
+    backgroundImage: 'retrait.jpg',
 }
 
 const EVENT =
 {
     type: 'ceremony' as const,
-    title: 'CEREMONIA & FIESTA',
-    date: 'sábado 13 de septiembre 2025',
-    time: '16:00 hs.',
-    venue: 'Schoenstatt Los Olmos',
-    address: 'Schoenstatt Los Olmos Pilar, Buenos Aires Province, Argentina',
-    locationUrl: 'https://maps.google.com/?q=Schoenstatt+Los+Olmos+Pilar',
+    title: 'CELEBRACIÓN',
+    date: 'Sábado 18 de Abril 2026',
+    time: '18:00 hs.',
+    venue: 'Janos Hudson (Uno)',
+    address: 'AU BS - LA PLATA, km 34,5, B1885 Guillermo Enrique Hudson',
+    locationUrl: 'https://www.google.com/maps/place/Janos+Hudson/@-34.8086462,-58.1741004,16.09z/data=!4m6!3m5!1s0x95a327f694931af9:0x44f6d41ea1d0e890!8m2!3d-34.8083419!4d-58.1704559!16s%2Fg%2F11spp52n8z?entry=ttu&g_ep=EgoyMDI2MDIwNC4wIKXMDSoASAFQAw%3D%3D',
 }
 
 
@@ -68,34 +68,60 @@ const CTA = {
 
 const BANKING_DATA = {
     bankName: 'Banco Galicia',
-    accountHolder: 'Lean y Sabri',
-    accountType: 'Caja de ahorro en pesos',
-    cbu: '0070000000000000000000',
-    alias: 'LEA.SABRI.BODA',
+    accountHolder: 'SIMON SABRINA SOLEDAD',
+    pesos: {
+        accountType: 'Caja de ahorro en pesos',
+        alias: 'boda.leanysabri',
+    },
+    dolares: {
+        accountType: 'Caja de ahorro en dólares',
+        alias: 'boda.leanysabri.usd',
+    },
 }
 
 const FOOTER = {
     message: 'Gracias por ser parte de este día tan especial',
-    instagramUrl: 'https://instagram.com/leaysabri',
-    whatsappNumber: '+5491112345678',
+    instagramUrl: 'https://instagram.com/boda.leaysabri',
+    whatsappNumber: '+5491125173423',
 }
 
 const TIMELINE_PHOTOS = [
-    { src: '/leaysabri01.jpg', alt: 'Nuestra historia', year: 2013 },
-    { src: '/leaysabri02.jpg', alt: 'Nuestra historia', year: 2014 },
-    { src: '/leaysabri03.jpg', alt: 'Nuestra historia', year: 2015 },
-    { src: '/leaysabri04.jpg', alt: 'Nuestra historia', year: 2016 },
-    { src: '/leaysabri05.jpg', alt: 'Nuestra historia', year: 2017 },
-    { src: '/leaysabri06.jpg', alt: 'Nuestra historia', year: 2018 },
-    { src: '/leaysabri07.jpg', alt: 'Nuestra historia', year: 2019 },
-    { src: '/leaysabri08.jpg', alt: 'Nuestra historia', year: 2020 },
-    { src: '/leaysabri09.jpg', alt: 'Nuestra historia', year: 2021 },
-    { src: '/leaysabri10.jpg', alt: 'Nuestra historia', year: 2022 },
-    { src: '/leaysabri11.jpg', alt: 'Nuestra historia', year: 2023 },
-    { src: '/leaysabri12.jpg', alt: 'Nuestra historia', year: 2024 },
-    { src: '/leaysabri13.jpg', alt: 'Nuestra historia', year: 2025 },
-    { src: '/leaysabri14.jpg', alt: 'Nuestra historia', year: 2025 },
-    { src: '/leaysabri14.jpg', alt: 'Nuestra historia', year: 2025 },
+    { src: '/2014.JPG', alt: 'Nuestra historia', year: 2014 },
+    { src: '/2014(1).jpg', alt: 'Nuestra historia', year: 2014 },
+    { src: '/2014(2).jpg', alt: 'Nuestra historia', year: 2014 },
+    { src: '/2015.jpg', alt: 'Nuestra historia', year: 2015 },
+    { src: '/2015(1).jpg', alt: 'Nuestra historia', year: 2015 },
+    { src: '/2015(2).jpg', alt: 'Nuestra historia', year: 2015 },
+    { src: '/2016.jpg', alt: 'Nuestra historia', year: 2016 },
+    { src: '/2016(1).jpg', alt: 'Nuestra historia', year: 2016 },
+    { src: '/2016(2).jpg', alt: 'Nuestra historia', year: 2016 },
+    { src: '/2017.jpg', alt: 'Nuestra historia', year: 2017 },
+    { src: '/2017(1).jpg', alt: 'Nuestra historia', year: 2017 },
+    { src: '/2017(2).jpg', alt: 'Nuestra historia', year: 2017 },
+    { src: '/2018.jpg', alt: 'Nuestra historia', year: 2018 },
+    { src: '/2018(1).jpg', alt: 'Nuestra historia', year: 2018 },
+    { src: '/2018(2).jpg', alt: 'Nuestra historia', year: 2018 },
+    { src: '/2019.jpg', alt: 'Nuestra historia', year: 2019 },
+    { src: '/2019(1).jpg', alt: 'Nuestra historia', year: 2019 },
+    { src: '/2019(2).jpg', alt: 'Nuestra historia', year: 2019 },
+    { src: '/2020.jpg', alt: 'Nuestra historia', year: 2020 },
+    { src: '/2020(1).jpg', alt: 'Nuestra historia', year: 2020 },
+    { src: '/2020(2).jpg', alt: 'Nuestra historia', year: 2020 },
+    { src: '/2021.jpg', alt: 'Nuestra historia', year: 2021 },
+    { src: '/2021(1).jpg', alt: 'Nuestra historia', year: 2021 },
+    { src: '/2021(2).jpg', alt: 'Nuestra historia', year: 2021 },
+    { src: '/2022(2).jpg', alt: 'Nuestra historia', year: 2022 },
+    { src: '/2022.jpg', alt: 'Nuestra historia', year: 2022 },
+    { src: '/2022(1).jpg', alt: 'Nuestra historia', year: 2022 },
+    { src: '/2023.jpg', alt: 'Nuestra historia', year: 2023 },
+    { src: '/2023(1).jpg', alt: 'Nuestra historia', year: 2023 },
+    { src: '/2023(2).jpg', alt: 'Nuestra historia', year: 2023 },
+    { src: '/2024.jpg', alt: 'Nuestra historia', year: 2024 },
+    { src: '/2024(1).jpg', alt: 'Nuestra historia', year: 2024 },
+    { src: '/2024(2).jpg', alt: 'Nuestra historia', year: 2024 },
+    { src: '/2025.jpg', alt: 'Nuestra historia', year: 2025 },
+    { src: '/2025(1).jpg', alt: 'Nuestra historia', year: 2025 },
+    { src: '/2026.jpg', alt: 'Nuestra historia', year: 2026 },
 ]
 
 // ============================================
@@ -126,7 +152,7 @@ export default function Invitation({ guest, code, heroRef, containerRef }: Invit
 
             <EventsSection event={EVENT} />
 
-            <MapSection locationQuery="Av. Suárez 1698, Buenos Aires, Argentina" />
+            <MapSection locationQuery="Janos Hudson" />
 
             <CTASection
                 guestName={guest?.name}
@@ -143,7 +169,7 @@ export default function Invitation({ guest, code, heroRef, containerRef }: Invit
             />
 
 
-            <TimelineCarousel title="Nuestra historia" photos={TIMELINE_PHOTOS} startYear={2013} endYear={2025} />
+            <TimelineCarousel title="Nuestra historia" photos={TIMELINE_PHOTOS} startYear={2014} endYear={2026} />
 
             <Footer
                 coupleNames={COUPLE_NAMES}

@@ -71,7 +71,12 @@
         font-size: var(--inv-text-base);
         color: var(--inv-text-secondary);
         text-align: center;
-        margin-bottom: var(--inv-space-sm);
+        margin: 4px 0;
+
+        &.intro--hint {
+            font-size: var(--inv-text-sm);
+            font-style: italic;
+        }
     }
 
     &__greeting {
@@ -103,6 +108,16 @@
         display: flex;
         flex-direction: column;
         gap: var(--inv-space-xs);
+
+        &--with-remove {
+            flex-direction: row;
+            align-items: center;
+            gap: var(--inv-space-sm);
+
+            input {
+                flex: 1;
+            }
+        }
 
         label {
             font-family: var(--inv-font-secondary);
@@ -141,6 +156,25 @@
 
         select {
             cursor: pointer;
+        }
+    }
+
+    &__remove-guest {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--inv-text-secondary);
+        padding: var(--inv-space-xs);
+        transition: color var(--inv-transition-fast);
+        flex-shrink: 0;
+
+        &:hover {
+            color: #991b1b;
+        }
+
+        svg {
+            width: 20px;
+            height: 20px;
         }
     }
 
