@@ -41,7 +41,7 @@ const HERO_CONTENT: {
 } = {
     headline: '¡Nos Casamos!',
     subheadline: 'Y queremos compartir este día tan especial con vos',
-    backgroundImage: 'retrait.png',
+    backgroundImage: 'retrait.jpg',
 }
 
 const EVENT =
@@ -51,8 +51,8 @@ const EVENT =
     date: 'Sábado 18 de Abril 2026',
     time: '18:00 hs.',
     venue: 'Janos Hudson (Uno)',
-    address: 'Schoenstatt Los Olmos Pilar, Buenos Aires Province, Argentina',
-    locationUrl: 'https://maps.google.com/?q=Schoenstatt+Los+Olmos+Pilar',
+    address: 'AU BS - LA PLATA, km 34,5, B1885 Guillermo Enrique Hudson',
+    locationUrl: 'https://www.google.com/maps/place/Janos+Hudson/@-34.8086462,-58.1741004,16.09z/data=!4m6!3m5!1s0x95a327f694931af9:0x44f6d41ea1d0e890!8m2!3d-34.8083419!4d-58.1704559!16s%2Fg%2F11spp52n8z?entry=ttu&g_ep=EgoyMDI2MDIwNC4wIKXMDSoASAFQAw%3D%3D',
 }
 
 
@@ -152,7 +152,7 @@ export default function Invitation({ guest, code, heroRef, containerRef }: Invit
 
             <EventsSection event={EVENT} />
 
-            <MapSection locationQuery="Av. Suárez 1698, Buenos Aires, Argentina" />
+            <MapSection locationQuery="Janos Hudson" />
 
             <CTASection
                 guestName={guest?.name}
