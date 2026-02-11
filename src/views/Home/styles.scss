@@ -5,6 +5,7 @@
 
 .container {
     height: 300vh;
+    height: 300dvh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -14,6 +15,7 @@
     >.envelope-wrapper {
         position: sticky;
         top: 50vh;
+        top: 50dvh;
         transform: translateY(-50%);
 
         >.envelope {
