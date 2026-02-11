@@ -106,7 +106,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
             if (deltaY > 0) {
                 openEnvelope();
-            } else if (deltaY < 0 && letterRefTop >= -20) {
+            } else if (deltaY < 0 && letterRefTop >= -50) {
                 closeEnvelope();
             }
         }
