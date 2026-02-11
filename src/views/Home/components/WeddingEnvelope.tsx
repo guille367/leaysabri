@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
+import { animate, motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
 import Invitation from '../../Invitation';
 import ScrollHint from '../../Invitation/components/ScrollHint';
 
@@ -34,13 +34,12 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const letterRef = useRef<HTMLDivElement>(null);
     const letterContainerRef = useRef<HTMLDivElement>(null);
+    const isAnimating = useRef(false);
 
     const [isLetterFullyOpen, setIsLetterFullyOpen] = useState(false);
 
     // Compute bottom offsets based on viewport so the letter travels from
     // inside the envelope to covering the full viewport.
-    // Envelope (240px) is centered at 50vh → bottom edge at 50vh + 120px.
-    // Letter (100vh) start: tucked inside envelope. End: aligned with viewport.
     const [startBottom, setStartBottom] = useState(-360);
     const [finalBottom, setFinalBottom] = useState(-301);
 
@@ -48,7 +47,6 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
         const update = () => {
             const vh = window.innerHeight;
             setFinalBottom(-(vh / 2 - 120));
-            // Interpolate start from -264 (mobile <=375px) to -360 (desktop >=1024px)
             const t = Math.min(1, Math.max(0, (window.innerWidth - 375) / (1024 - 375)));
             setStartBottom(-264 + t * (-360 + 264));
         };
@@ -63,50 +61,110 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
         offset: ["start start", "end end"]
     });
 
-    // ── Stage 1: Flap opens (0 → 35%) ──────────────────────────────────
-    const flapRotateX = useTransform(scrollYProgress, [0, 0.35], [0, 180]);
-    const flapZIndex = useTransform(scrollYProgress, [0, 0.1, 0.35], [3, 0, 0]);
+    // ── Stage 1: Flap opens (0 → 20%) ──────────────────────────────────
+    const flapRotateX = useTransform(scrollYProgress, [0, 0.20], [0, 180]);
+    const flapZIndex = useTransform(scrollYProgress, [0, 0.08, 0.20], [3, 0, 0]);
 
-    // ── Stage 2: Letter pops UP out of pocket (35 → 55%) ────────────────
-    // ── Stage 3: Letter centers on viewport while scaling (55 → 95%) ────
+    // ── Stage 2: Letter pops UP out of pocket (15 → 35%) ────────────────
+    // ── Stage 3: Letter centers on viewport while scaling (35 → 90%) ────
     const letterBottom = useTransform(
         scrollYProgress,
-        [0, 0.35, 0.55, 0.70, 0.90, 0.95],
+        [0, 0.15, 0.35, 0.55, 0.80, 0.90],
         [startBottom, startBottom, 0, 0, finalBottom, finalBottom]
     );
     const letterScale = useTransform(
         scrollYProgress,
-        [0, 0.35, 0.55, 0.70, 0.85, 0.95],
+        [0, 0.15, 0.35, 0.55, 0.75, 0.90],
         [0.15, 0.15, 0.20, 0.45, 0.75, 1.0]
     );
     const letterZIndex = useTransform(
         scrollYProgress,
-        [0, 0.34, 0.65, 0.99],
+        [0, 0.14, 0.50, 0.90],
         [1, 1, 1, 40]
     );
 
     // ── Scroll hint fades early ─────────────────────────────────────────
-    const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.05, 0.15], [1, 1, 0]);
+    const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.02, 0.08], [1, 1, 0]);
+
+    // ── Auto-scroll: a single scroll/swipe triggers the full animation ──
+    function openEnvelope() {
+        if (isAnimating.current) return;
+        isAnimating.current = true;
+        const scrollable = (containerRef.current?.scrollHeight ?? 0) - window.innerHeight;
+        const duration = window.innerWidth <= 768 ? 2.5 : 3.5;
+        animate(window.scrollY, scrollable, {
+            duration,
+            ease: [0.25, 0.1, 0.25, 1],
+            onUpdate: (v) => window.scrollTo(0, v),
+            onComplete: () => { isAnimating.current = false; },
+        });
+    }
+
+    function closeEnvelope() {
+        if (isAnimating.current) return;
+        isAnimating.current = true;
+        animate(window.scrollY, 0, {
+            duration: 2.8,
+            ease: [0.25, 0.1, 0.25, 1],
+            onUpdate: (v) => window.scrollTo(0, v),
+            onComplete: () => { isAnimating.current = false; },
+        });
+    }
+
+    // Listen for wheel/touch on the page to trigger open/close
+    useEffect(() => {
+        let touchStartY = 0;
+
+        function handleWheel(e: WheelEvent) {
+            if (isLetterFullyOpen || isAnimating.current) return;
+            if (e.deltaY > 0) {
+                openEnvelope();
+            } else if (e.deltaY < 0 && scrollYProgress.get() > 0) {
+                closeEnvelope();
+            }
+        }
+
+        function handleTouchStart(e: TouchEvent) {
+            touchStartY = e.touches[0].clientY;
+        }
+
+        function handleTouchEnd(e: TouchEvent) {
+            if (isLetterFullyOpen || isAnimating.current) return;
+            const deltaY = touchStartY - e.changedTouches[0].clientY;
+            if (deltaY > 20) {
+                openEnvelope();
+            } else if (deltaY < -20 && scrollYProgress.get() > 0) {
+                closeEnvelope();
+            }
+        }
+
+        window.addEventListener('wheel', handleWheel, { passive: true });
+        window.addEventListener('touchstart', handleTouchStart, { passive: true });
+        window.addEventListener('touchend', handleTouchEnd);
+
+        return () => {
+            window.removeEventListener('wheel', handleWheel);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchend', handleTouchEnd);
+        };
+    }, [isLetterFullyOpen]);
 
     // ── Scroll context transition ───────────────────────────────────────
-    // When the letter fully covers the viewport, let users scroll inside it.
-    // When they scroll back to the top of the letter and keep scrolling up,
-    // hand control back to the page so the envelope animation reverses.
     useMotionValueEvent(scrollYProgress, "change", (value) => {
-        if (value >= 0.98 && !isLetterFullyOpen) {
+        if (value >= 0.92 && !isLetterFullyOpen) {
             setIsLetterFullyOpen(true);
-        } else if (value < 0.95 && isLetterFullyOpen) {
+        } else if (value < 0.88 && isLetterFullyOpen) {
             setIsLetterFullyOpen(false);
         }
     });
 
-    // When the letter is open and user scrolls up at scrollTop=0,
-    // lock the letter so the next scroll event goes to the page.
+    // When letter is open and user scrolls up at scrollTop=0, close envelope
     const handleLetterWheel = useCallback((e: WheelEvent) => {
         const el = letterContainerRef.current;
         if (!el) return;
         if (e.deltaY < 0 && el.scrollTop <= 0) {
             setIsLetterFullyOpen(false);
+            closeEnvelope();
         }
     }, []);
 
@@ -120,9 +178,9 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
         if (!el) return;
         const startY = (el as any)._touchStartY ?? 0;
         const deltaY = startY - e.touches[0].clientY;
-        // Swiping down (deltaY < 0) while at top → close
         if (deltaY < -10 && el.scrollTop <= 0) {
             setIsLetterFullyOpen(false);
+            closeEnvelope();
         }
     }, []);
 
