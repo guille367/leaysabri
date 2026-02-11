@@ -10,10 +10,6 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     const params = await searchParams
     const code = params.code
 
-    // Build OG image URL with or without code
-    const ogImageUrl = code
-        ? `https://bodaleanysabri.com/api/og?code=${code}`
-        : 'https://bodaleanysabri.com/api/og'
 
     // Default metadata
     const defaultMetadata: Metadata = {
@@ -22,12 +18,6 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
         openGraph: {
             title: 'Lean & Sabri - ¡Nos Casamos!',
             description: '¡Estás invitado/a a celebrar nuestra boda! Acompañanos en este día tan especial.',
-            images: [{
-                url: ogImageUrl,
-                width: 1200,
-                height: 630,
-                alt: 'Lean & Sabri - ¡Nos casamos!'
-            }],
             locale: 'es_ES',
             type: 'website',
         },
@@ -35,7 +25,6 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
             card: 'summary_large_image',
             title: 'Lean & Sabri - ¡Nos Casamos!',
             description: '¡Estás invitado/a a celebrar nuestra boda! Acompañanos en este día tan especial.',
-            images: [ogImageUrl],
         }
     }
 
@@ -57,12 +46,6 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
                 openGraph: {
                     title: `${guest.name} - Boda Lean & Sabri`,
                     description: personalizedDescription,
-                    images: [{
-                        url: ogImageUrl,
-                        width: 1200,
-                        height: 630,
-                        alt: 'Lean & Sabri - ¡Nos casamos!'
-                    }],
                     locale: 'es_ES',
                     type: 'website',
                 },
@@ -70,7 +53,6 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
                     card: 'summary_large_image',
                     title: `${guest.name} - Boda Lean & Sabri`,
                     description: personalizedDescription,
-                    images: [ogImageUrl],
                 }
             }
         }
