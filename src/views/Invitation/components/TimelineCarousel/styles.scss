@@ -172,6 +172,7 @@
 
     &__timeline {
         display: flex;
+        justify-content: center;
         gap: var(--inv-space-xs);
         flex-wrap: nowrap;
         padding: var(--inv-space-sm) var(--inv-space-xl);
@@ -184,6 +185,7 @@
         }
 
         @include mobile {
+            justify-content: flex-start;
             padding: var(--inv-space-sm) var(--inv-space-md);
             margin: 0 calc(-1 * var(--inv-space-md));
         }

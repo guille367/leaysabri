@@ -166,7 +166,15 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
         totalPeople: guests.reduce((acc, g) => acc + 1 + g.guestsAmount, 0),
     }
 
-    const getInvitationLink = (code: string) => `${baseUrl}?code=${code}`
+
+
+    const getInvitationLink = (guest: Guest) => {
+
+
+        const generalMessage = guest.guestsAmount > 0 ? `¡Hola ${guest.name}! Nos casamos y nos encantaría que vos y tus invitados vengan a la fiesta. ` : `¡Hola ${guest.name}! Nos casamos y nos encantaría que vengas a la fiesta.`;
+
+        return `${generalMessage} Para confirmar ingresa a este link ${baseUrl}?code=${guest.code}`
+    }
 
     const filteredGuests = guests.filter(guest => {
         // Search filter
@@ -315,7 +323,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                                             <div className="admin__link-cell">
                                                 <button
                                                     className="admin__copy-link"
-                                                    onClick={() => copyToClipboard(getInvitationLink(guest.code))}
+                                                    onClick={() => copyToClipboard(getInvitationLink(guest))}
                                                     title="Copiar link"
                                                 >
                                                     Copiar link de invitación

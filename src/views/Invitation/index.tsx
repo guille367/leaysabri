@@ -67,7 +67,7 @@ const CTA = {
 }
 
 const BANKING_DATA = {
-    bankName: 'Banco Galicia',
+    bankName: 'Banco BBVA',
     accountHolder: 'SIMON SABRINA SOLEDAD',
     pesos: {
         accountType: 'Caja de ahorro en pesos',
@@ -119,9 +119,10 @@ const TIMELINE_PHOTOS = [
     { src: '/2024.jpg', alt: 'Nuestra historia', year: 2024 },
     { src: '/2024-1.jpg', alt: 'Nuestra historia', year: 2024 },
     { src: '/2024-2.jpg', alt: 'Nuestra historia', year: 2024 },
-    { src: '/2025.jpg', alt: 'Nuestra historia', year: 2025 },
     { src: '/2025-1.jpg', alt: 'Nuestra historia', year: 2025 },
+    { src: '/2025-2.jpg', alt: 'Nuestra historia', year: 2025 },
     { src: '/2025-3.jpg', alt: 'Nuestra historia', year: 2025 },
+    { src: '/2025-4.jpg', alt: 'Nuestra historia', year: 2025 },
     { src: '/2026.jpg', alt: 'Nuestra historia', year: 2026 },
 ]
 
