@@ -24,7 +24,7 @@ export default function TimelineCarousel({
     endYear = 2026,
     className = ''
 }: TimelineCarouselProps) {
-    const [currentYear, setCurrentYear] = useState(endYear)
+    const [currentYear, setCurrentYear] = useState(startYear)
     const [modalOpen, setModalOpen] = useState(false)
     const [modalPhotoIndex, setModalPhotoIndex] = useState(0)
 
@@ -58,8 +58,8 @@ export default function TimelineCarousel({
         const clickedPhoto = filteredPhotos[filteredIndex]
         const globalIndex = allPhotosSorted.findIndex(
             (p, i) => p.src === clickedPhoto.src && p.year === clickedPhoto.year &&
-            allPhotosSorted.slice(0, i).filter(x => x.src === clickedPhoto.src && x.year === clickedPhoto.year).length ===
-            filteredPhotos.slice(0, filteredIndex).filter(x => x.src === clickedPhoto.src && x.year === clickedPhoto.year).length
+                allPhotosSorted.slice(0, i).filter(x => x.src === clickedPhoto.src && x.year === clickedPhoto.year).length ===
+                filteredPhotos.slice(0, filteredIndex).filter(x => x.src === clickedPhoto.src && x.year === clickedPhoto.year).length
         )
         setModalPhotoIndex(globalIndex >= 0 ? globalIndex : 0)
         setModalOpen(true)
