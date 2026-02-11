@@ -38,17 +38,39 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
     const [isLetterFullyOpen, setIsLetterFullyOpen] = useState(false);
 
+    function calculateFinal() {
+        if (!window) return -3000;
+
+        const vh = window?.innerHeight || 0;
+        return -(vh / 2 - 120);
+    }
+
+    function calculateStart() {
+        if (!window) return -3000;
+
+        const vh = window?.innerHeight || 0;
+        // Push the letter far enough down that its visual top edge
+        // (after scale 0.15) sits below the envelope top.
+        // Visual top = (240 + |bottom| - vh/2) - vh*0.15/2
+        // We need visual top >= 0, so |bottom| >= vh*(1+0.15)/2 - 240 + buffer
+        const envelopeHeight = 240;
+        return -(vh * 1.15 / 2 - envelopeHeight + 20)
+    }
+
+
+
     // Compute bottom offsets based on viewport so the letter travels from
     // inside the envelope to covering the full viewport.
-    const [startBottom, setStartBottom] = useState(-360);
-    const [finalBottom, setFinalBottom] = useState(-301);
+    const [startBottom, setStartBottom] = useState(() => calculateStart());
+    const [finalBottom, setFinalBottom] = useState(() => calculateFinal());
 
     useEffect(() => {
         const update = () => {
-            const vh = window.innerHeight;
-            setFinalBottom(-(vh / 2 - 120));
-            const t = Math.min(1, Math.max(0, (window.innerWidth - 375) / (1024 - 375)));
-            setStartBottom(-264 + t * (-360 + 264));
+            const vh = calculateFinal()
+            setFinalBottom(vh);
+
+            const start = calculateStart();
+            setStartBottom(start);
         };
         update();
         window.addEventListener('resize', update);
