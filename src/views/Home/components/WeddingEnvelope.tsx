@@ -94,16 +94,16 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
     // Flap animation: 0% to 40% of scroll
     const flapRotateX = useTransform(scrollYProgress, [0, 0.4], [0, 180]);
-    const flapZIndex = useTransform(scrollYProgress, [0, 0.39, 0.4], [2, 2, 0]);
+    const flapZIndex = useTransform(scrollYProgress, [0, 0.28, 0.4], [2, 2, 0]);
 
     // Letter animation: starts behind pocket inside envelope, rises and scales to fill viewport
     // bottom: starts at 0 (inside envelope), rises up as scroll progresses
-    const letterBottom = useTransform(scrollYProgress, [0, .5, .7, .9, 1], [-264, -200, -100, -200, finalBottom]);
+    const letterBottom = useTransform(scrollYProgress, [0, .5, .7, .9, 1], [-361, -260, -100, -200, finalBottom]);
     // scale: starts tiny inside envelope, grows to fill viewport
     const letterScale = useTransform(scrollYProgress, [0.34, .44, .55, .66, .77, .88, 0.95], [0.15, .15, .15, .15, .25, .50, 1]);
     // const letterScale = useTransform(scrollYProgress, [0.3, 0.5, 0.7, 1], [0.15, 0.35, 0.65, 1]);
     // z-index: starts behind pocket (1), jumps in front of everything (10)
-    const letterZIndex = useTransform(scrollYProgress, [0.34, .44, .55, .66, .77, .88, 0.95], [1, 1, 1, 1, 8, 8, 10]);
+    const letterZIndex = useTransform(scrollYProgress, [0.34, .44, .66, .78, .77, .88, 0.95], [1, 1, 1, 8, 8, 8, 10]);
 
     // Envelope fades out as letter takes over
     const envelopeOpacity = useTransform(scrollYProgress, [0.5, 0.7], [1, 1]);
