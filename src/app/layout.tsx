@@ -39,7 +39,7 @@ export default function RootLayout({
                     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap"
                     rel="stylesheet"
                 />
-                <meta property="og:image" content="https://bodaleanysabri.com/retraitcompressed.jpg" />
+                <meta property="og:image" content="https://bodaleanysabri.com/retraitsupercompressed.jpg" />
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
                 <meta property="og:image:alt" content="Boda Lean & Sabri" />
