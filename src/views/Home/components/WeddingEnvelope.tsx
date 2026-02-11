@@ -39,8 +39,14 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
     // Envelope (240px) is centered at 50vh → bottom edge at 50vh + 120px.
     // Letter (100vh) needs bottom = -(50vh - 120px) to reach viewport bottom.
     const [finalBottom, setFinalBottom] = useState(-301);
+    const [startBottom, setStartBottom] = useState(-360);
     useEffect(() => {
-        const update = () => setFinalBottom(-(window.innerHeight / 2 - 120));
+        const update = () => {
+            setFinalBottom(-(window.innerHeight / 2 - 120));
+            // Interpolate from -264 (mobile, <=375px) to -360 (desktop, >=1024px)
+            const t = Math.min(1, Math.max(0, (window.innerWidth - 375) / (1024 - 375)));
+            setStartBottom(-264 + t * (-360 - (-264)));
+        };
         update();
         window.addEventListener('resize', update);
         return () => window.removeEventListener('resize', update);
@@ -98,7 +104,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
     // Letter animation: starts behind pocket inside envelope, rises and scales to fill viewport
     // bottom: starts at 0 (inside envelope), rises up as scroll progresses
-    const letterBottom = useTransform(scrollYProgress, [0, .5, .7, .9, 1], [-361, -260, -100, -200, finalBottom]);
+    const letterBottom = useTransform(scrollYProgress, [0, .5, .7, .9, 1], [startBottom, -260, -100, -200, finalBottom]);
     // scale: starts tiny inside envelope, grows to fill viewport
     const letterScale = useTransform(scrollYProgress, [0.34, .44, .55, .66, .77, .88, 0.95], [0.15, .15, .15, .15, .25, .50, 1]);
     // const letterScale = useTransform(scrollYProgress, [0.3, 0.5, 0.7, 1], [0.15, 0.35, 0.65, 1]);
