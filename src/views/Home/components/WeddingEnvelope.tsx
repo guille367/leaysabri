@@ -64,7 +64,8 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
     function openEnvelope() {
         const duration = window.innerWidth <= 768 ? 1.8 : 2.5;
-        animate(window.scrollY, window.scrollY + (window.innerHeight * 2), {
+        const scrollableDistance = (containerRef.current?.scrollHeight ?? 0) - window.innerHeight;
+        animate(window.scrollY, scrollableDistance, {
             duration,
             ease: [0.22, 1, 0.36, 1],
             onUpdate: (v) => window.scrollTo(0, v),
