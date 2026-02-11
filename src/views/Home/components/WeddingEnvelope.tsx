@@ -79,10 +79,11 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
     }
 
     useEffect(() => {
+        let touchStartY = 0;
+
         function handleWheel(e: any) {
             startAnimation();
             const letterRefTop = letterRef?.current?.getBoundingClientRect()?.top || 10;
-            // console.log(e.deltaY, letterRefTop)
 
             if (e.deltaY > 0) {
                 openEnvelope();
@@ -91,10 +92,32 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
             }
         }
 
+        function handleTouchStart(e: TouchEvent) {
+            touchStartY = e.touches[0].clientY;
+        }
+
+        function handleTouchEnd(e: TouchEvent) {
+            const deltaY = touchStartY - e.changedTouches[0].clientY;
+            if (Math.abs(deltaY) < 30) return; // ignore small swipes
+
+            startAnimation();
+            const letterRefTop = letterRef?.current?.getBoundingClientRect()?.top || 10;
+
+            if (deltaY > 0) {
+                openEnvelope();
+            } else if (deltaY < 0 && letterRefTop >= -20) {
+                closeEnvelope();
+            }
+        }
+
         window.addEventListener('wheel', handleWheel);
+        window.addEventListener('touchstart', handleTouchStart, { passive: true });
+        window.addEventListener('touchend', handleTouchEnd);
 
         return () => {
-            window.removeEventListener('wheel', handleWheel)
+            window.removeEventListener('wheel', handleWheel);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchend', handleTouchEnd);
         }
     }, [])
 
