@@ -81,7 +81,7 @@ const BANKING_DATA = {
 
 const FOOTER = {
     message: 'Gracias por ser parte de este día tan especial',
-    instagramUrl: 'https://instagram.com/boda.leaysabri',
+    instagramUrl: 'https://instagram.com/boda.leanysabri',
     whatsappNumber: '+5491125173423',
 }
 
