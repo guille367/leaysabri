@@ -96,9 +96,6 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
             touchStartY = e.touches[0].clientY;
         }
 
-        function handleTouchMove(e: TouchEvent) {
-            e.preventDefault();
-        }
 
         function handleTouchEnd(e: TouchEvent) {
             const deltaY = touchStartY - e.changedTouches[0].clientY;
@@ -114,15 +111,19 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
             }
         }
 
-        window.addEventListener('wheel', handleWheel);
-        window.addEventListener('touchstart', handleTouchStart, { passive: true });
-        window.addEventListener('touchmove', handleTouchMove, { passive: false });
-        window.addEventListener('touchend', handleTouchEnd);
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (isTouchDevice) {
+            // Manejar eventos táctiles para móviles
+            window.addEventListener('touchstart', handleTouchStart, { passive: true });
+            window.addEventListener('touchend', handleTouchEnd);
+        } else {
+            window.addEventListener('wheel', handleWheel);
+        }
 
         return () => {
             window.removeEventListener('wheel', handleWheel);
             window.removeEventListener('touchstart', handleTouchStart);
-            window.removeEventListener('touchmove', handleTouchMove);
             window.removeEventListener('touchend', handleTouchEnd);
         }
     }, [])
