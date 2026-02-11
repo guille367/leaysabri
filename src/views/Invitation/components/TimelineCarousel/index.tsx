@@ -104,12 +104,10 @@ export default function TimelineCarousel({
         )
         setModalPhotoIndex(globalIndex >= 0 ? globalIndex : 0)
         setModalOpen(true)
-        document.body.style.overflow = 'hidden'
     }
 
     const closeModal = () => {
         setModalOpen(false)
-        document.body.style.overflow = ''
     }
 
     // Keyboard navigation for modal
