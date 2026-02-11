@@ -86,7 +86,7 @@ const FOOTER = {
 }
 
 const TIMELINE_PHOTOS = [
-    { src: '/2014.JPG', alt: 'Nuestra historia', year: 2014 },
+    { src: '/2014.jpg', alt: 'Nuestra historia', year: 2014 },
     { src: '/2014-1.jpg', alt: 'Nuestra historia', year: 2014 },
     { src: '/2014-2.jpg', alt: 'Nuestra historia', year: 2014 },
     { src: '/2015.jpg', alt: 'Nuestra historia', year: 2015 },
