@@ -1,14 +1,25 @@
 import type { Metadata } from 'next'
 import '@/styles/main.scss'
 
+
 export const metadata: Metadata = {
     title: 'Lean & Sabri - ¡Nos Casamos!',
     description: 'Invitación de casamiento de Lean y Sabri',
     openGraph: {
+        title: 'Lean & Sabri - ¡Nos Casamos!',
+        description: 'Invitación de casamiento de Lean y Sabri',
         images: [{
             url: 'https://bodaleanysabri.com/retrait.jpg',
             alt: '¡Nos casamos!'
-        }]
+        }],
+        locale: 'es_ES',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Lean & Sabri - ¡Nos Casamos!',
+        description: 'Invitación de casamiento de Lean y Sabri',
+        images: ['https://bodaleanysabri.com/retrait.jpg'],
     }
 }
 

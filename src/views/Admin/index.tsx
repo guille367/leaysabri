@@ -434,7 +434,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                                 <label>Link</label>
                                 <input
                                     type="text"
-                                    value={getInvitationLink(newGuest.code)}
+                                    value={getInvitationLink(newGuest as Guest)}
                                     disabled
                                     className="admin__modal-input--disabled"
                                 />
