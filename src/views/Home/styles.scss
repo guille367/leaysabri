@@ -10,7 +10,8 @@
     justify-content: center;
     align-items: flex-start;
     position: relative;
-    background: red;
+    background: var(--inv-bg-main);
+    ;
 
     >.envelope-wrapper {
         position: sticky;

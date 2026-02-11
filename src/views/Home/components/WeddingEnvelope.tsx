@@ -115,13 +115,13 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-        if (isTouchDevice) {
-            // Manejar eventos táctiles para móviles
-            window.addEventListener('touchstart', handleTouchStart, { passive: true });
-            window.addEventListener('touchend', handleTouchEnd);
-        } else {
-            window.addEventListener('wheel', handleWheel);
-        }
+        // if (isTouchDevice) {
+        // Manejar eventos táctiles para móviles
+        window.addEventListener('touchstart', handleTouchStart, { passive: true });
+        window.addEventListener('touchend', handleTouchEnd);
+        // } else {
+        window.addEventListener('wheel', handleWheel);
+        // }
 
         return () => {
             window.removeEventListener('wheel', handleWheel);
