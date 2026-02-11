@@ -2,8 +2,14 @@ import type { Metadata } from 'next'
 import '@/styles/main.scss'
 
 export const metadata: Metadata = {
-    title: 'Lean & Sabri - Nos Casamos',
+    title: 'Lean & Sabri - ¡Nos Casamos!',
     description: 'Invitación de casamiento de Lean y Sabri',
+    openGraph: {
+        images: [{
+            url: 'https://bodaleanysabri.com/retrait.jpg',
+            alt: '¡Nos casamos!'
+        }]
+    }
 }
 
 export default function RootLayout({

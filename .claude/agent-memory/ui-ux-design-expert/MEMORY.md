@@ -12,10 +12,13 @@
 - Desktop: min-width 769px
 
 ## Component Patterns
-- TimelineCarousel: uses `useState`, `useRef`, `useCallback`, `useEffect` for scroll centering
+- TimelineCarousel: horizontal scroll carousel with CSS scroll-snap, dot indicators, `trackRef` for scroll tracking
 - Modal uses `createPortal` to escape transform context
-- Framer Motion `AnimatePresence mode="wait"` for photo transitions
+- Framer Motion `AnimatePresence mode="wait"` for year-change transitions (wraps scrollable track)
 - BEM-like naming: `inv-carousel__element--modifier`
+- `'use client'` boundary at `src/app/HomeClient.tsx` covers all descendant components
+- Scrollbar hiding pattern: `scrollbar-width: none` + `::-webkit-scrollbar { display: none }`
+- Centering few items in scroll container: `justify-content: safe center`
 
 ## Animation Patterns
 - Title fade-in: `initial={{ opacity: 0, y: 20 }}` + `whileInView`

@@ -95,6 +95,12 @@
         gap: var(--inv-space-md);
         max-width: 1000px;
         margin: 0 auto;
+        cursor: grab;
+        touch-action: pan-y;
+
+        &:active {
+            cursor: grabbing;
+        }
 
         @include tablet {
             grid-template-columns: repeat(3, 1fr);

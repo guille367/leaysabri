@@ -326,7 +326,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                                                     onClick={() => copyToClipboard(getInvitationLink(guest))}
                                                     title="Copiar link"
                                                 >
-                                                    Copiar link de invitación
+                                                    Copiar mensaje de invitación
                                                 </button>
                                             </div>
                                         ) : '-'}

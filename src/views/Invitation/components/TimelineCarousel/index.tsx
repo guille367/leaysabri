@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, PanInfo } from 'framer-motion'
 import Image from 'next/image';
 import './styles.scss'
 
@@ -26,6 +26,7 @@ export default function TimelineCarousel({
     className = ''
 }: TimelineCarouselProps) {
     const [currentYear, setCurrentYear] = useState(startYear)
+    const [direction, setDirection] = useState(0)
     const [modalOpen, setModalOpen] = useState(false)
     const [modalPhotoIndex, setModalPhotoIndex] = useState(0)
     const timelineRef = useRef<HTMLDivElement>(null)
@@ -71,6 +72,7 @@ export default function TimelineCarousel({
     const goToPreviousYear = () => {
         const currentIndex = years.indexOf(currentYear)
         if (currentIndex > 0) {
+            setDirection(-1)
             setCurrentYear(years[currentIndex - 1])
         }
     }
@@ -78,7 +80,17 @@ export default function TimelineCarousel({
     const goToNextYear = () => {
         const currentIndex = years.indexOf(currentYear)
         if (currentIndex < years.length - 1) {
+            setDirection(1)
             setCurrentYear(years[currentIndex + 1])
+        }
+    }
+
+    const handleDragEnd = (_: any, info: PanInfo) => {
+        const swipeThreshold = 50
+        if (info.offset.x < -swipeThreshold) {
+            goToNextYear()
+        } else if (info.offset.x > swipeThreshold) {
+            goToPreviousYear()
         }
     }
 
@@ -197,14 +209,19 @@ export default function TimelineCarousel({
             </div>
 
             <div className="inv-carousel__container">
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="wait" initial={false} custom={direction}>
                     <motion.div
                         key={currentYear}
                         className={`inv-carousel__track ${getGridClass()}`}
-                        initial={{ opacity: 0, x: 50 }}
+                        custom={direction}
+                        initial={{ opacity: 0, x: direction >= 0 ? 200 : -200 }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50 }}
-                        transition={{ duration: 0.4 }}
+                        exit={{ opacity: 0, x: direction >= 0 ? -200 : 200 }}
+                        transition={{ duration: 0.35, ease: 'easeInOut' }}
+                        drag="x"
+                        dragConstraints={{ left: 0, right: 0 }}
+                        dragElastic={0.3}
+                        onDragEnd={handleDragEnd}
                     >
                         {filteredPhotos.length > 0 ? (
                             filteredPhotos.map((photo, index) => (
@@ -237,7 +254,10 @@ export default function TimelineCarousel({
                     <button
                         key={year}
                         className={`inv-carousel__year ${year === currentYear ? 'inv-carousel__year--active' : ''}`}
-                        onClick={() => setCurrentYear(year)}
+                        onClick={() => {
+                            setDirection(year > currentYear ? 1 : -1)
+                            setCurrentYear(year)
+                        }}
                     >
                         {year}
                     </button>
