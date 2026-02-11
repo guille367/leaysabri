@@ -4,20 +4,23 @@
 @use '../Invitation/components/Icons/styles.scss' as icons-styles;
 
 .container {
-    height: 300vh;
-    height: 300dvh;
+    height: 400vh;
+    height: 400dvh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     position: relative;
     background: var(--inv-bg-main);
-    ;
 
     >.envelope-wrapper {
         position: sticky;
         top: 50vh;
         top: 50dvh;
         transform: translateY(-50%);
+
+        // 3D perspective for realistic flap rotation
+        perspective: 1000px;
+        perspective-origin: center center;
 
         >.envelope {
             position: relative;
@@ -29,6 +32,9 @@
                 0 4px 20px rgba(0, 0, 0, 0.12),
                 0 1px 4px rgba(0, 0, 0, 0.08);
             overflow: visible;
+
+            // Enable 3D transforms for children
+            transform-style: preserve-3d;
 
             // Subtle paper texture
             &::before {
@@ -58,7 +64,7 @@
                 border-top: 130px solid #ede6da;
                 border-right: 170px solid transparent;
                 border-left: 170px solid transparent;
-                transform-origin: top;
+                transform-origin: top center;
                 filter:
                     drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15)) drop-shadow(0 8px 12px rgba(0, 0, 0, 0.1)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.12));
                 backface-visibility: visible;
@@ -210,8 +216,8 @@
             // Letter inside envelope — sits behind the pocket
             .letter-container {
                 position: absolute;
-                // Center on viewport: envelope center = viewport center
-                // envelope is 340px, so 50% = 170px from left
+                // Center on viewport: envelope is 340px, so 50% = 170px from left
+                // Then offset by -50vw to align with viewport center
                 left: 170px;
                 margin-left: -50vw;
                 // bottom is driven by Framer Motion
@@ -222,12 +228,12 @@
                 background: var(--inv-bg-main);
                 box-shadow: var(--inv-shadow-lg);
                 transform-origin: center center;
-                // border-radius: var(--inv-radius-md);
-                overflow-y: auto;
+                // overflow is driven by Framer Motion (hidden during animation, auto when open)
                 overflow-x: hidden;
                 // Start behind pocket (z-index 2), Framer Motion will raise it
                 z-index: 1;
-                overflow-x: hidden;
+
+                scrollbar-width: none;
 
                 &::-webkit-scrollbar {
                     display: none;
@@ -274,9 +280,17 @@
         >.envelope-scroll-hint {
             position: absolute;
             bottom: -188px;
-            // left: 50%;
-            // transform: translateX(-50%);
             justify-self: center;
+        }
+    }
+
+    // Mobile adjustments
+    @media (max-width: 768px) {
+        height: 350vh;
+        height: 350dvh;
+
+        >.envelope-wrapper {
+            perspective: 800px;
         }
     }
 }

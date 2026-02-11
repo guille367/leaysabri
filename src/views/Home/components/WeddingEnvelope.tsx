@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { animate, motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
 import Invitation from '../../Invitation';
 import ScrollHint from '../../Invitation/components/ScrollHint';
 
@@ -33,186 +33,170 @@ function WaxSealContent() {
 export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const letterRef = useRef<HTMLDivElement>(null);
-    const isScrolling = useRef<boolean>(false);
+    const letterContainerRef = useRef<HTMLDivElement>(null);
 
-    // Compute final bottom dynamically so the letter covers the full viewport.
+    const [isLetterFullyOpen, setIsLetterFullyOpen] = useState(false);
+
+    // Compute bottom offsets based on viewport so the letter travels from
+    // inside the envelope to covering the full viewport.
     // Envelope (240px) is centered at 50vh → bottom edge at 50vh + 120px.
-    // Letter (100vh) needs bottom = -(50vh - 120px) to reach viewport bottom.
-    const [finalBottom, setFinalBottom] = useState(-301);
+    // Letter (100vh) start: tucked inside envelope. End: aligned with viewport.
     const [startBottom, setStartBottom] = useState(-360);
+    const [finalBottom, setFinalBottom] = useState(-301);
+
     useEffect(() => {
         const update = () => {
-            setFinalBottom(-(window.innerHeight / 2 - 120));
-            // Interpolate from -264 (mobile, <=375px) to -360 (desktop, >=1024px)
+            const vh = window.innerHeight;
+            setFinalBottom(-(vh / 2 - 120));
+            // Interpolate start from -264 (mobile <=375px) to -360 (desktop >=1024px)
             const t = Math.min(1, Math.max(0, (window.innerWidth - 375) / (1024 - 375)));
-            setStartBottom(-264 + t * (-360 - (-264)));
+            setStartBottom(-264 + t * (-360 + 264));
         };
         update();
         window.addEventListener('resize', update);
         return () => window.removeEventListener('resize', update);
     }, []);
 
+    // ── Scroll progress (drives the entire animation) ───────────────────
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
     });
 
-    function startAnimation() {
-        isScrolling.current = true;
-        document.body.style.overflow = 'hidden';
-    }
+    // ── Stage 1: Flap opens (0 → 35%) ──────────────────────────────────
+    const flapRotateX = useTransform(scrollYProgress, [0, 0.35], [0, 180]);
+    const flapZIndex = useTransform(scrollYProgress, [0, 0.1, 0.35], [3, 0, 0]);
 
-    function openEnvelope() {
-        const duration = window.innerWidth <= 768 ? 1.8 : 2.5;
-        const scrollableDistance = (containerRef.current?.scrollHeight ?? 0) - window.innerHeight;
-        animate(window.scrollY, scrollableDistance, {
-            duration,
-            ease: [0.22, 1, 0.36, 1],
-            onUpdate: (v) => window.scrollTo(0, v),
-        });
-    }
+    // ── Stage 2: Letter pops UP out of pocket (35 → 55%) ────────────────
+    // ── Stage 3: Letter centers on viewport while scaling (55 → 95%) ────
+    const letterBottom = useTransform(
+        scrollYProgress,
+        [0, 0.35, 0.55, 0.70, 0.90, 0.95],
+        [startBottom, startBottom, 0, 0, finalBottom, finalBottom]
+    );
+    const letterScale = useTransform(
+        scrollYProgress,
+        [0, 0.35, 0.55, 0.70, 0.85, 0.95],
+        [0.15, 0.15, 0.20, 0.45, 0.75, 1.0]
+    );
+    const letterZIndex = useTransform(
+        scrollYProgress,
+        [0, 0.34, 0.65, 0.99],
+        [1, 1, 1, 40]
+    );
 
-    function closeEnvelope() {
-        animate(window.scrollY, 0, {
-            duration: 2,
-            ease: [0.76, 0, 0.24, 1],
-            onUpdate: (v) => window.scrollTo(0, v),
-        });
-    }
+    // ── Scroll hint fades early ─────────────────────────────────────────
+    const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.05, 0.15], [1, 1, 0]);
+
+    // ── Scroll context transition ───────────────────────────────────────
+    // When the letter fully covers the viewport, let users scroll inside it.
+    // When they scroll back to the top of the letter and keep scrolling up,
+    // hand control back to the page so the envelope animation reverses.
+    useMotionValueEvent(scrollYProgress, "change", (value) => {
+        if (value >= 0.98 && !isLetterFullyOpen) {
+            setIsLetterFullyOpen(true);
+        } else if (value < 0.95 && isLetterFullyOpen) {
+            setIsLetterFullyOpen(false);
+        }
+    });
+
+    // When the letter is open and user scrolls up at scrollTop=0,
+    // lock the letter so the next scroll event goes to the page.
+    const handleLetterWheel = useCallback((e: WheelEvent) => {
+        const el = letterContainerRef.current;
+        if (!el) return;
+        if (e.deltaY < 0 && el.scrollTop <= 0) {
+            setIsLetterFullyOpen(false);
+        }
+    }, []);
+
+    const handleLetterTouchStart = useCallback((e: TouchEvent) => {
+        const el = letterContainerRef.current;
+        if (el) (el as any)._touchStartY = e.touches[0].clientY;
+    }, []);
+
+    const handleLetterTouchMove = useCallback((e: TouchEvent) => {
+        const el = letterContainerRef.current;
+        if (!el) return;
+        const startY = (el as any)._touchStartY ?? 0;
+        const deltaY = startY - e.touches[0].clientY;
+        // Swiping down (deltaY < 0) while at top → close
+        if (deltaY < -10 && el.scrollTop <= 0) {
+            setIsLetterFullyOpen(false);
+        }
+    }, []);
 
     useEffect(() => {
-        let touchStartY = 0;
-
-        function handleWheel(e: any) {
-            startAnimation();
-            const letterRefTop = letterRef?.current?.getBoundingClientRect()?.top || 10;
-
-            if (e.deltaY > 0) {
-                openEnvelope();
-            } else if (e.deltaY < 0 && letterRefTop >= -20) {
-                closeEnvelope()
-            }
+        const el = letterContainerRef.current;
+        if (!el) return;
+        if (isLetterFullyOpen) {
+            el.addEventListener('wheel', handleLetterWheel, { passive: true });
+            el.addEventListener('touchstart', handleLetterTouchStart, { passive: true });
+            el.addEventListener('touchmove', handleLetterTouchMove, { passive: true });
         }
-
-        function handleTouchStart(e: TouchEvent) {
-            touchStartY = e.touches[0].clientY;
-        }
-
-
-        function handleTouchEnd(e: TouchEvent) {
-            const deltaY = touchStartY - e.changedTouches[0].clientY;
-            // if (Math.abs(deltaY) < 30) return; // ignore small swipes
-
-            startAnimation();
-            const letterRefTop = letterRef?.current?.getBoundingClientRect()?.top || 10;
-
-            if (deltaY > 0) {
-                openEnvelope();
-            } else if (deltaY < 0 && letterRefTop >= -50) {
-                closeEnvelope();
-            }
-        }
-
-        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-        // if (isTouchDevice) {
-        // Manejar eventos táctiles para móviles
-        window.addEventListener('touchstart', handleTouchStart, { passive: true });
-        window.addEventListener('touchend', handleTouchEnd);
-        // } else {
-        window.addEventListener('wheel', handleWheel);
-        // }
-
         return () => {
-            window.removeEventListener('wheel', handleWheel);
-            window.removeEventListener('touchstart', handleTouchStart);
-            window.removeEventListener('touchend', handleTouchEnd);
-        }
-    }, [])
-
-    // Flap animation: 0% to 40% of scroll
-    const flapRotateX = useTransform(scrollYProgress, [0, 0.4], [0, 180]);
-    const flapZIndex = useTransform(scrollYProgress, [0, 0.28, 0.4], [2, 2, 0]);
-
-    // Letter animation: starts behind pocket inside envelope, rises and scales to fill viewport
-    // bottom: starts at 0 (inside envelope), rises up as scroll progresses
-    const letterBottom = useTransform(scrollYProgress, [0, .5, .7, .9, 1], [startBottom, -260, -100, -200, finalBottom]);
-    // scale: starts tiny inside envelope, grows to fill viewport
-    const letterScale = useTransform(scrollYProgress, [0.34, .44, .55, .66, .77, .88, 0.95], [0.15, .15, .15, .15, .25, .50, 1]);
-    // const letterScale = useTransform(scrollYProgress, [0.3, 0.5, 0.7, 1], [0.15, 0.35, 0.65, 1]);
-    // z-index: starts behind pocket (1), jumps in front of everything (10)
-    const letterZIndex = useTransform(scrollYProgress, [0.34, .44, .66, .78, .77, .88, 0.95], [1, 1, 1, 8, 8, 8, 10]);
-
-    // Envelope fades out as letter takes over
-    const envelopeOpacity = useTransform(scrollYProgress, [0.5, 0.7], [1, 1]);
-
-    // const scrollBehaviour = useTransform(scrollYProgress, [0, .999999, 100], ['hidden', 'hidden', 'auto'])
-
+            el.removeEventListener('wheel', handleLetterWheel);
+            el.removeEventListener('touchstart', handleLetterTouchStart);
+            el.removeEventListener('touchmove', handleLetterTouchMove);
+        };
+    }, [isLetterFullyOpen, handleLetterWheel, handleLetterTouchStart, handleLetterTouchMove]);
 
     return (
-        <>
-            {/* Envelope Section */}
-            <div className="container" ref={containerRef}>
-                <div className="envelope-wrapper">
-                    <motion.div className="envelope" style={{ opacity: envelopeOpacity }}>
-                        <motion.div
-                            className="flap"
-                            style={{
-                                rotateX: flapRotateX,
-                                zIndex: flapZIndex,
-                                transformOrigin: "top"
-                            }}
-                        />
-                        <div className="pocket" />
-
-                        {/* Letter — inside envelope, behind pocket (z-index 1 < pocket's 2) */}
-                        <motion.div
-                            className="letter-container"
-                            style={{
-                                bottom: letterBottom,
-                                scale: letterScale,
-                                zIndex: letterZIndex,
-                            }}
-
-                        >
-                            <Invitation heroRef={letterRef} containerRef={containerRef} guest={guest} code={code} />
-                        </motion.div>
-
-                        {/* <div className="twine">
-                            <div className="twine__line" />
-                            <div className="twine__bow">
-                                <div className="twine__bow-loop twine__bow-loop--left" />
-                                <div className="twine__bow-loop twine__bow-loop--right" />
-                                <div className="twine__bow-knot" />
-                            </div>
-                        </div> */}
-
-                        {/* Wax seal — top half rotates with flap */}
-                        <motion.div
-                            className="seal-half seal-half--top"
-                            style={{
-                                rotateX: flapRotateX,
-                                zIndex: flapZIndex,
-                                transformOrigin: "top"
-                            }}
-                        >
-                            <WaxSealContent />
-                        </motion.div>
-
-                        {/* Wax seal — bottom half stays on envelope */}
-                        <div className="seal-half seal-half--bottom">
-                            <WaxSealContent />
-                        </div>
-                    </motion.div>
-
-                    {/* Scroll hint below envelope */}
+        <div className="container" ref={containerRef}>
+            <div className="envelope-wrapper">
+                <div className="envelope">
+                    {/* Flap with 3D rotation */}
                     <motion.div
-                        className="envelope-scroll-hint"
+                        className="flap"
+                        style={{
+                            rotateX: flapRotateX,
+                            zIndex: flapZIndex,
+                            transformOrigin: "top center"
+                        }}
+                    />
+                    <div className="pocket" />
+
+                    {/* Letter — inside envelope, behind pocket initially */}
+                    <motion.div
+                        ref={letterContainerRef}
+                        className="letter-container"
+                        style={{
+                            bottom: letterBottom,
+                            scale: letterScale,
+                            zIndex: letterZIndex,
+                            overflowY: isLetterFullyOpen ? 'auto' : 'hidden',
+                            pointerEvents: isLetterFullyOpen ? 'auto' : 'none',
+                        }}
                     >
-                        <ScrollHint variant="dark" text="Deslizá para abrir" />
+                        <Invitation heroRef={letterRef} containerRef={containerRef} guest={guest} code={code} />
                     </motion.div>
+
+                    {/* Wax seal — top half rotates with flap */}
+                    <motion.div
+                        className="seal-half seal-half--top"
+                        style={{
+                            rotateX: flapRotateX,
+                            zIndex: flapZIndex,
+                            transformOrigin: "top center"
+                        }}
+                    >
+                        <WaxSealContent />
+                    </motion.div>
+
+                    {/* Wax seal — bottom half stays on envelope */}
+                    <div className="seal-half seal-half--bottom">
+                        <WaxSealContent />
+                    </div>
                 </div>
+
+                {/* Scroll hint below envelope */}
+                <motion.div
+                    className="envelope-scroll-hint"
+                    style={{ opacity: scrollHintOpacity }}
+                >
+                    <ScrollHint variant="dark" text="Deslizá para abrir" />
+                </motion.div>
             </div>
-        </>
+        </div>
     );
 }

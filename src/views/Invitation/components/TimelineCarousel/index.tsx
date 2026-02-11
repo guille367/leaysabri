@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image';
 import './styles.scss'
 
 interface Photo {
@@ -185,9 +186,11 @@ export default function TimelineCarousel({
                                     onClick={() => openModal(index)}
                                     aria-label={`Ver foto ${index + 1}`}
                                 >
-                                    <img
+                                    <Image
                                         src={photo.src}
                                         alt={photo.alt || `Foto ${index + 1}`}
+                                        width={500}
+                                        height={500}
                                         className="inv-carousel__image"
                                     />
                                 </button>
