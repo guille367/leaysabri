@@ -96,6 +96,10 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
             touchStartY = e.touches[0].clientY;
         }
 
+        function handleTouchMove(e: TouchEvent) {
+            e.preventDefault();
+        }
+
         function handleTouchEnd(e: TouchEvent) {
             const deltaY = touchStartY - e.changedTouches[0].clientY;
             if (Math.abs(deltaY) < 30) return; // ignore small swipes
@@ -112,11 +116,13 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
         window.addEventListener('wheel', handleWheel);
         window.addEventListener('touchstart', handleTouchStart, { passive: true });
+        window.addEventListener('touchmove', handleTouchMove, { passive: false });
         window.addEventListener('touchend', handleTouchEnd);
 
         return () => {
             window.removeEventListener('wheel', handleWheel);
             window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchmove', handleTouchMove);
             window.removeEventListener('touchend', handleTouchEnd);
         }
     }, [])
