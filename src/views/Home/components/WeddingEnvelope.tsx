@@ -102,7 +102,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
 
         function handleTouchEnd(e: TouchEvent) {
             const deltaY = touchStartY - e.changedTouches[0].clientY;
-            if (Math.abs(deltaY) < 30) return; // ignore small swipes
+            // if (Math.abs(deltaY) < 30) return; // ignore small swipes
 
             startAnimation();
             const letterRefTop = letterRef?.current?.getBoundingClientRect()?.top || 10;
