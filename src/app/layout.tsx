@@ -9,8 +9,10 @@ export const metadata: Metadata = {
         title: 'Lean & Sabri - ¡Nos Casamos!',
         description: 'Invitación de casamiento de Lean y Sabri',
         images: [{
-            url: 'https://bodaleanysabri.com/retrait.jpg',
-            alt: '¡Nos casamos!'
+            url: 'https://bodaleanysabri.com/api/og',
+            width: 1200,
+            height: 630,
+            alt: 'Lean & Sabri - ¡Nos casamos!'
         }],
         locale: 'es_ES',
         type: 'website',
@@ -19,7 +21,7 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Lean & Sabri - ¡Nos Casamos!',
         description: 'Invitación de casamiento de Lean y Sabri',
-        images: ['https://bodaleanysabri.com/retrait.jpg'],
+        images: ['https://bodaleanysabri.com/api/og'],
     }
 }
 
