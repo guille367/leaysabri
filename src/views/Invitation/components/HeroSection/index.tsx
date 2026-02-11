@@ -29,7 +29,7 @@ export default function HeroSection({
     const [hasRevealed, setHasRevealed] = useState(false);
 
     useMotionValueEvent(scrollYProgress, "change", (value) => {
-        if (value >= 0.99 && !hasRevealed) {
+        if (value >= 0.79 && !hasRevealed) {
             setHasRevealed(true);
         }
     });
@@ -47,7 +47,7 @@ export default function HeroSection({
                     className="inv-hero__names"
                     initial={{ opacity: 0 }}
                     animate={hasRevealed ? { opacity: 1 } : { opacity: 0 }}
-                    transition={{ delay: 0.3, duration: 0.6 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
                 >
                     {coupleNames}
                 </motion.p>
@@ -56,7 +56,7 @@ export default function HeroSection({
                     className="inv-hero__headline"
                     initial={{ opacity: 0, y: 20 }}
                     animate={hasRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                    transition={{ delay: 0.5, duration: 0.6 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
                 >
                     {headline}
                 </motion.h1>
@@ -65,7 +65,7 @@ export default function HeroSection({
                     className="inv-hero__subheadline"
                     initial={{ opacity: 0 }}
                     animate={hasRevealed ? { opacity: 1 } : { opacity: 0 }}
-                    transition={{ delay: 0.7, duration: 0.6 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
                 >
                     {subheadline}
                 </motion.p>

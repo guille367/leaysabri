@@ -121,6 +121,7 @@ const TIMELINE_PHOTOS = [
     { src: '/2024-2.jpg', alt: 'Nuestra historia', year: 2024 },
     { src: '/2025.jpg', alt: 'Nuestra historia', year: 2025 },
     { src: '/2025-1.jpg', alt: 'Nuestra historia', year: 2025 },
+    { src: '/2025-3.jpg', alt: 'Nuestra historia', year: 2025 },
     { src: '/2026.jpg', alt: 'Nuestra historia', year: 2026 },
 ]
 
