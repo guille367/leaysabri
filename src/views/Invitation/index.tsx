@@ -62,7 +62,7 @@ const CTA = {
     rsvpButtonText: 'Confirmar',
     rsvpUrl: '#',
     giftTitle: '¿Querés hacernos un regalo?',
-    giftDescription: 'Su presencia es nuestro mejor regalo, pero si desean regalarnos algo, agradeceríamos tu contribución para nuestra luna de miel',
+    giftDescription: 'Su presencia es nuestro mejor regalo, pero si deseas hacernos un presente, agradeceríamos tu contribución para nuestra luna de miel',
     giftButtonText: 'Ver datos bancarios',
 }
 
