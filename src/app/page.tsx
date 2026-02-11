@@ -41,17 +41,17 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
             const personalizedDescription = `${guest.name}, estás invitado/a a la boda de Lean & Sabri. ¡Esperamos contar con tu presencia en este día tan especial!`
 
             return {
-                title: `${guest.name} - Boda Lean & Sabri`,
+                title: `Boda Lean & Sabri`,
                 description: personalizedDescription,
                 openGraph: {
-                    title: `${guest.name} - Boda Lean & Sabri`,
+                    title: `Boda Lean & Sabri`,
                     description: personalizedDescription,
                     locale: 'es_ES',
                     type: 'website',
                 },
                 twitter: {
                     card: 'summary_large_image',
-                    title: `${guest.name} - Boda Lean & Sabri`,
+                    title: `Boda Lean & Sabri`,
                     description: personalizedDescription,
                 }
             }

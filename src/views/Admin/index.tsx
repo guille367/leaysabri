@@ -69,7 +69,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
     }, [])
     const [saving, setSaving] = useState(false)
 
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    const baseUrl = 'https://bodaleanysabri.com'
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault()
@@ -168,13 +168,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
 
 
 
-    const getInvitationLink = (guest: Guest) => {
-
-
-        const generalMessage = guest.guestsAmount > 0 ? `¡Hola ${guest.name}! Nos casamos y nos encantaría que vos y tus invitados vengan a la fiesta. ` : `¡Hola ${guest.name}! Nos casamos y nos encantaría que vengas a la fiesta.`;
-
-        return `${generalMessage} Para confirmar ingresa a este link ${baseUrl}?code=${guest.code}`
-    }
+    const getInvitationLink = (guest: Guest) => `${baseUrl}?code=${guest.code}`;
 
     const filteredGuests = guests.filter(guest => {
         // Search filter
@@ -326,7 +320,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                                                     onClick={() => copyToClipboard(getInvitationLink(guest))}
                                                     title="Copiar link"
                                                 >
-                                                    Copiar mensaje de invitación
+                                                    Copiar link de invitación
                                                 </button>
                                             </div>
                                         ) : '-'}
