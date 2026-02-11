@@ -140,6 +140,19 @@ export default function TimelineCarousel({
         )
     }
 
+    const [modalDirection, setModalDirection] = useState(0)
+
+    const handleModalDragEnd = (_: any, info: PanInfo) => {
+        const swipeThreshold = 50
+        if (info.offset.x < -swipeThreshold) {
+            setModalDirection(1)
+            goToNextPhoto()
+        } else if (info.offset.x > swipeThreshold) {
+            setModalDirection(-1)
+            goToPreviousPhoto()
+        }
+    }
+
     const hasPreviousYear = years.indexOf(currentYear) > 0
     const hasNextYear = years.indexOf(currentYear) < years.length - 1
 
@@ -273,6 +286,7 @@ export default function TimelineCarousel({
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.3 }}
                             onClick={closeModal}
+                            onDragEnd={handleDragEnd}
                         >
                             <button
                                 className="inv-carousel__modal-close"
@@ -304,20 +318,26 @@ export default function TimelineCarousel({
                                 </svg>
                             </button>
 
-                            <AnimatePresence mode="wait">
+                            <AnimatePresence mode="wait" initial={false} custom={modalDirection}>
                                 <motion.div
                                     className="inv-carousel__modal-content"
                                     onClick={(e) => e.stopPropagation()}
                                     key={modalPhotoIndex}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ duration: 0.2 }}
+                                    custom={modalDirection}
+                                    initial={{ opacity: 0, x: modalDirection >= 0 ? 200 : -200 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: modalDirection >= 0 ? -200 : 200 }}
+                                    transition={{ duration: 0.25, ease: 'easeInOut' }}
+                                    drag="x"
+                                    dragConstraints={{ left: 0, right: 0 }}
+                                    dragElastic={0.3}
+                                    onDragEnd={handleModalDragEnd}
                                 >
                                     <img
                                         src={currentModalPhoto.src}
                                         alt={currentModalPhoto.alt || `Foto ${modalPhotoIndex + 1}`}
                                         className="inv-carousel__modal-image"
+                                        draggable={false}
                                     />
                                 </motion.div>
                             </AnimatePresence>
