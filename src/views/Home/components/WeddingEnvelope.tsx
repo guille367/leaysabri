@@ -52,7 +52,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
         return () => window.removeEventListener('resize', update);
     }, []);
 
-    const { scrollYProgress, scrollY } = useScroll({
+    const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
     });
