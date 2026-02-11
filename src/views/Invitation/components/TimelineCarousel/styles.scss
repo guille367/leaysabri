@@ -172,20 +172,18 @@
 
     &__timeline {
         display: flex;
-        justify-content: center;
         gap: var(--inv-space-xs);
-        flex-wrap: wrap;
-        padding: var(--inv-space-sm) 0;
+        flex-wrap: nowrap;
+        padding: var(--inv-space-sm) var(--inv-space-xl);
         overflow-x: auto;
         scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
 
         &::-webkit-scrollbar {
             display: none;
         }
 
         @include mobile {
-            justify-content: flex-start;
-            flex-wrap: nowrap;
             padding: var(--inv-space-sm) var(--inv-space-md);
             margin: 0 calc(-1 * var(--inv-space-md));
         }
@@ -202,6 +200,7 @@
         color: var(--inv-text-secondary);
         transition: all var(--inv-transition-fast);
         white-space: nowrap;
+        flex-shrink: 0;
 
         &:hover {
             border-color: var(--inv-accent);

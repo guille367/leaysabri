@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image';
@@ -28,6 +28,34 @@ export default function TimelineCarousel({
     const [currentYear, setCurrentYear] = useState(startYear)
     const [modalOpen, setModalOpen] = useState(false)
     const [modalPhotoIndex, setModalPhotoIndex] = useState(0)
+    const timelineRef = useRef<HTMLDivElement>(null)
+
+    // Scroll the active year button to the center of the timeline
+    const centerActiveYear = useCallback(() => {
+        const timeline = timelineRef.current
+        if (!timeline) return
+
+        const activeButton = timeline.querySelector('.inv-carousel__year--active') as HTMLElement | null
+        if (!activeButton) return
+
+        const timelineRect = timeline.getBoundingClientRect()
+        const buttonRect = activeButton.getBoundingClientRect()
+
+        // Calculate the scroll position that centers the active button
+        const scrollLeft = activeButton.offsetLeft - (timelineRect.width / 2) + (buttonRect.width / 2)
+
+        timeline.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+        })
+    }, [])
+
+    // Center the active year whenever currentYear changes
+    useEffect(() => {
+        // Small delay to ensure the DOM has updated the active class
+        const timer = setTimeout(centerActiveYear, 50)
+        return () => clearTimeout(timer)
+    }, [currentYear, centerActiveYear])
 
     const years = Array.from(
         { length: endYear - startYear + 1 },
@@ -204,7 +232,7 @@ export default function TimelineCarousel({
                 </AnimatePresence>
             </div>
 
-            <div className="inv-carousel__timeline">
+            <div className="inv-carousel__timeline" ref={timelineRef}>
                 {years.map(year => (
                     <button
                         key={year}
