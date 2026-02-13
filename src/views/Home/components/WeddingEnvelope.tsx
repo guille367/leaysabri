@@ -259,7 +259,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
                         className="envelope-scroll-hint"
                         style={{ opacity: scrollHintOpacity }}
                     >
-                        <ScrollHint variant="dark" text="Deslizá para abrir" />
+                        <ScrollHint variant="dark" text="Deslizá para abrir" onClick={openEnvelope} />
                     </motion.div>
                 }
             </div>

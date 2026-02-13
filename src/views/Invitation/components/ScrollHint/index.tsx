@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { animate, motion } from 'framer-motion'
 import './styles.scss'
 import { ChevronDownIcon } from '../Icons'
 
@@ -19,9 +19,11 @@ export default function ScrollHint({
         if (onClick) {
             onClick()
         } else {
-            window.scrollTo({
-                top: window.scrollY + (window.innerHeight * 2),
-                behavior: 'smooth'
+            const target = window.scrollY + (window.innerHeight * 2)
+            animate(window.scrollY, target, {
+                duration: 1.2,
+                ease: [0.25, 0.1, 0.25, 1],
+                onUpdate: (v) => window.scrollTo(0, v),
             })
         }
     }
