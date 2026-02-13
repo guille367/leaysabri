@@ -115,7 +115,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
         });
     }
 
-    // Listen for wheel/touch on the page to trigger open/close
+    // Listen for wheel / touch on the page to trigger open / close
     useEffect(() => {
         let touchStartY = 0;
 
@@ -162,46 +162,6 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
         }
     });
 
-    // When letter is open and user scrolls up at scrollTop=0, close envelope
-    const handleLetterWheel = useCallback((e: WheelEvent) => {
-        const el = letterContainerRef.current;
-        if (!el) return;
-        if (e.deltaY < 0 && el.scrollTop <= 0) {
-            setIsLetterFullyOpen(false);
-            closeEnvelope();
-        }
-    }, []);
-
-    const handleLetterTouchStart = useCallback((e: TouchEvent) => {
-        const el = letterContainerRef.current;
-        if (el) (el as any)._touchStartY = e.touches[0].clientY;
-    }, []);
-
-    const handleLetterTouchMove = useCallback((e: TouchEvent) => {
-        const el = letterContainerRef.current;
-        if (!el) return;
-        const startY = (el as any)._touchStartY ?? 0;
-        const deltaY = startY - e.touches[0].clientY;
-        if (deltaY < -10 && el.scrollTop <= 0) {
-            setIsLetterFullyOpen(false);
-            closeEnvelope();
-        }
-    }, []);
-
-    useEffect(() => {
-        const el = letterContainerRef.current;
-        if (!el) return;
-        if (isLetterFullyOpen) {
-            el.addEventListener('wheel', handleLetterWheel, { passive: true });
-            el.addEventListener('touchstart', handleLetterTouchStart, { passive: true });
-            el.addEventListener('touchmove', handleLetterTouchMove, { passive: true });
-        }
-        return () => {
-            el.removeEventListener('wheel', handleLetterWheel);
-            el.removeEventListener('touchstart', handleLetterTouchStart);
-            el.removeEventListener('touchmove', handleLetterTouchMove);
-        };
-    }, [isLetterFullyOpen, handleLetterWheel, handleLetterTouchStart, handleLetterTouchMove]);
 
     return (
         <div className="container" ref={containerRef}>
@@ -259,7 +219,7 @@ export default function WeddingEnvelope({ guest, code }: WeddingEnvelopeProps) {
                         className="envelope-scroll-hint"
                         style={{ opacity: scrollHintOpacity }}
                     >
-                        <ScrollHint variant="dark" text="Deslizá para abrir" onClick={openEnvelope} />
+                        <ScrollHint className='scroll-hint--click' variant="dark" text="Click para abrir" onClick={openEnvelope} />
                     </motion.div>
                 }
             </div>

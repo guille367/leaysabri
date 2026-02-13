@@ -1,6 +1,7 @@
 import { motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import './styles.scss'
 import { RefObject, useState } from 'react'
+import ScrollHint from '../ScrollHint'
 
 interface HeroSectionProps {
     coupleNames: string
@@ -71,6 +72,7 @@ export default function HeroSection({
                 </motion.p>
             </div>
 
+            {hasRevealed && <ScrollHint className='scroll-hint--slide' text="Deslizá" />}
         </section>
     )
 }

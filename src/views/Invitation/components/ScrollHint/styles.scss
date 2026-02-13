@@ -9,8 +9,9 @@
     border: none;
     cursor: pointer;
     font-family: var(--inv-font-secondary);
-    font-size: var(--inv-text-sm);
-    opacity: 0.8;
+    font-size: var(--inv-text-base);
+    letter-spacing: 0.08em;
+    opacity: 0.9;
     transition: opacity var(--inv-transition-fast);
     padding: var(--inv-space-sm);
 
@@ -27,7 +28,22 @@
     }
 
     &__icon {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
+    }
+
+    &--slide {
+        color: #fff !important;
+        opacity: 1 !important;
+        font-size: var(--inv-text-sm);
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+        padding-bottom: var(--inv-space-2xl);
+        z-index: 2;
+        position: absolute;
+        bottom: 0;
+    }
+
+    &--click {
+        font-family: var(--inv-font-accent, 'Playfair Display', Georgia, serif);
     }
 }
