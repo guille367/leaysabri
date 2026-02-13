@@ -240,6 +240,16 @@
         }
     }
 
+    &__th--sortable {
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.2s;
+
+        &:hover {
+            color: #1a1a1a;
+        }
+    }
+
     &__row {
         &--yes {
             background: rgba(34, 197, 94, 0.05);

@@ -43,6 +43,8 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
     const [modalOpen, setModalOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [statFilter, setStatFilter] = useState<'all' | 'confirmed' | 'pending' | 'guests' | null>(null)
+    const [sortColumn, setSortColumn] = useState<string | null>(null)
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
     const [newGuest, setNewGuest] = useState({
         name: '',
         guestsAmount: 0,
@@ -170,6 +172,15 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
 
     const getInvitationLink = (guest: Guest) => `${baseUrl}?code=${guest.code}`;
 
+    const handleSort = (column: string) => {
+        if (sortColumn === column) {
+            setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')
+        } else {
+            setSortColumn(column)
+            setSortDirection('asc')
+        }
+    }
+
     const filteredGuests = guests.filter(guest => {
         // Search filter
         const query = searchQuery.toLowerCase().trim()
@@ -184,6 +195,26 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
         if (statFilter === 'pending') return !guest.confirmado
 
         return true
+    })
+
+    const sortedGuests = [...filteredGuests].sort((a, b) => {
+        if (!sortColumn) return 0
+        const dir = sortDirection === 'asc' ? 1 : -1
+
+        switch (sortColumn) {
+            case 'name':
+                return dir * a.name.localeCompare(b.name)
+            case 'guestsAmount':
+                return dir * (a.guestsAmount - b.guestsAmount)
+            case 'guests':
+                return dir * (a.guests.join(', ')).localeCompare(b.guests.join(', '))
+            case 'dietaryRestrictions':
+                return dir * (a.dietaryRestrictions || '').localeCompare(b.dietaryRestrictions || '')
+            case 'confirmado':
+                return dir * (Number(a.confirmado) - Number(b.confirmado))
+            default:
+                return 0
+        }
     })
 
     const handleStatClick = (filter: 'all' | 'confirmed' | 'pending' | 'guests') => {
@@ -291,17 +322,27 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                     <table className="admin__table">
                         <thead>
                             <tr>
-                                <th>Invitado</th>
-                                <th>Cantidad de acompañantes</th>
-                                <th>Acompañantes</th>
-                                <th>Restricciones</th>
-                                <th>Confirmado</th>
+                                <th className="admin__th--sortable" onClick={() => handleSort('name')}>
+                                    Invitado {sortColumn === 'name' && (sortDirection === 'asc' ? '▲' : '▼')}
+                                </th>
+                                <th className="admin__th--sortable" onClick={() => handleSort('guestsAmount')}>
+                                    Cantidad de acompañantes {sortColumn === 'guestsAmount' && (sortDirection === 'asc' ? '▲' : '▼')}
+                                </th>
+                                <th className="admin__th--sortable" onClick={() => handleSort('guests')}>
+                                    Acompañantes {sortColumn === 'guests' && (sortDirection === 'asc' ? '▲' : '▼')}
+                                </th>
+                                <th className="admin__th--sortable" onClick={() => handleSort('dietaryRestrictions')}>
+                                    Restricciones {sortColumn === 'dietaryRestrictions' && (sortDirection === 'asc' ? '▲' : '▼')}
+                                </th>
+                                <th className="admin__th--sortable" onClick={() => handleSort('confirmado')}>
+                                    Confirmado {sortColumn === 'confirmado' && (sortDirection === 'asc' ? '▲' : '▼')}
+                                </th>
                                 <th>Link</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredGuests.map(guest => (
+                            {sortedGuests.map(guest => (
                                 <tr key={guest.id} className="admin__row">
                                     <td>{guest.name}</td>
                                     <td>{guest.guestsAmount}</td>
@@ -341,7 +382,7 @@ export default function Admin({ initialGuests = [] }: AdminFormTypes) {
                         </tbody>
                     </table>
 
-                    {filteredGuests.length === 0 && (
+                    {sortedGuests.length === 0 && (
                         <div className="admin__empty">
                             {guests.length === 0 ? 'No hay invitados' : 'No se encontraron resultados'}
                         </div>

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import '@/styles/main.scss'
-import SoundPlayer from '@/components/SoundPlayer'
 
 
 export const metadata: Metadata = {
@@ -46,7 +45,6 @@ export default function RootLayout({
                 <meta property="og:image:alt" content="Boda Lean & Sabri" />
             </head>
             <body>
-                <SoundPlayer />
                 {children}
             </body>
         </html>
