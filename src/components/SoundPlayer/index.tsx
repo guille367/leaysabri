@@ -18,18 +18,21 @@ export default function SoundPlayer() {
         }
         audio.addEventListener('ended', handleEnded)
 
-        const startOnScroll = () => {
+        const startOnInteraction = () => {
             audio.play().then(() => {
                 setIsPlaying(true)
             }).catch(() => {})
-            window.removeEventListener('scroll', startOnScroll)
+            window.removeEventListener('click', startOnInteraction)
+            window.removeEventListener('touchend', startOnInteraction)
         }
 
-        window.addEventListener('scroll', startOnScroll)
+        window.addEventListener('click', startOnInteraction)
+        window.addEventListener('touchend', startOnInteraction)
 
         return () => {
             audio.removeEventListener('ended', handleEnded)
-            window.removeEventListener('scroll', startOnScroll)
+            window.removeEventListener('click', startOnInteraction)
+            window.removeEventListener('touchend', startOnInteraction)
             audio.pause()
             audioRef.current = null
         }
