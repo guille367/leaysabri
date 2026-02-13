@@ -72,7 +72,7 @@ export default function HeroSection({
                 </motion.p>
             </div>
 
-            {hasRevealed && <ScrollHint className='scroll-hint--slide' text="Deslizá" />}
+            {hasRevealed && <ScrollHint animate={true} className='scroll-hint--slide' text="Deslizá" />}
         </section>
     )
 }
